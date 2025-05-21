@@ -3,6 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { formatCurrency } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import MonthlyBalanceChart from '../components/Dashboard/MonthlyBalanceChart';
+import AccountBalancePieChart from '../components/Dashboard/AccountBalancePieChart';
+import IncomeByCategoryChart from '../components/Dashboard/IncomeByCategoryChart';
+import TotalBalanceLineChart from '../components/Dashboard/TotalBalanceLineChart';
+import QuickStatsCards from '../components/Dashboard/QuickStatsCards';
+import { Transaction, Account, Category, Goal } from '../types';
 
 // Definição de tipos para os dados do dashboard
 interface DashboardData {
@@ -19,6 +25,10 @@ interface DashboardData {
   topIncomes: any[];
   savingsRate: number;
   budgetProgress: any[];
+  allTransactions: Transaction[];
+  allAccounts: Account[];
+  categories: Category[];
+  goals: Goal[];
 }
 
 const Dashboard: React.FC = () => {
@@ -38,6 +48,10 @@ const Dashboard: React.FC = () => {
     topIncomes: [],
     savingsRate: 0,
     budgetProgress: [],
+    allTransactions: [],
+    allAccounts: [],
+    categories: [],
+    goals: [],
   });
 
   const supabase = createClient(
@@ -167,6 +181,24 @@ const Dashboard: React.FC = () => {
         ?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 5) || [];
 
+      // Fetch all transactions (para gráficos)
+      const { data: allTransactions } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id);
+
+      // Fetch categories
+      const { data: categories } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('user_id', user.id);
+
+      // Fetch goals
+      const { data: goals } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('user_id', user.id);
+
       setData({
         totalBalance,
         monthlyIncome,
@@ -181,6 +213,10 @@ const Dashboard: React.FC = () => {
         incomeByCategory: [],
         monthlyTrends: [],
         budgetProgress: [],
+        allTransactions: allTransactions || [],
+        allAccounts: accounts || [],
+        categories: categories || [],
+        goals: goals || [],
       });
     } catch (error: any) {
       setError(error.message);
@@ -222,29 +258,22 @@ const Dashboard: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Saldo Total</h3>
-              <p className="text-2xl font-bold mt-1">{formatCurrency(data.totalBalance)}</p>
-            </div>
-            <span className="bg-blue-50 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">
-              Total
-            </span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Saldo Total */}
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-xs font-medium text-gray-500 truncate">Saldo Total</h3>
+            <span className="bg-blue-50 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-full">Total</span>
           </div>
-          <div className="flex items-center text-sm">
-            <span className="text-gray-500">Todas as contas</span>
-          </div>
+          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.totalBalance)}</p>
+          <span className="text-xs text-gray-500 mt-2">Todas as contas</span>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Receitas do Mês</h3>
-              <p className="text-2xl font-bold mt-1">{formatCurrency(data.monthlyIncome)}</p>
-            </div>
-            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+        {/* Receitas do Mês */}
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-xs font-medium text-gray-500 truncate">Receitas do Mês</h3>
+            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               incomeChangeLabel === 'Novo' || incomeChangeLabel.startsWith('+')
                 ? 'bg-green-50 text-green-600'
                 : incomeChangeLabel.startsWith('-')
@@ -254,24 +283,23 @@ const Dashboard: React.FC = () => {
               {incomeChangeLabel}
             </span>
           </div>
-          <div className="flex items-center text-sm">
+          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.monthlyIncome)}</p>
+          <div className="flex items-center text-xs mt-2">
             <ArrowUpRight 
-              size={16} 
+              size={14} 
               className={incomeChangeLabel.startsWith('+') ? 'text-green-500' : 'text-red-500'} 
             />
-            <span className="text-gray-500 ml-1">
+            <span className="text-gray-500 ml-1 truncate">
               vs. mês anterior ({formatCurrency(data.lastMonthIncome)})
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Despesas do Mês</h3>
-              <p className="text-2xl font-bold mt-1">{formatCurrency(data.monthlyExpenses)}</p>
-            </div>
-            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+        {/* Despesas do Mês */}
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-xs font-medium text-gray-500 truncate">Despesas do Mês</h3>
+            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               expenseChangeLabel === 'Novo' || expenseChangeLabel.startsWith('-')
                 ? 'bg-red-50 text-red-600'
                 : expenseChangeLabel.startsWith('+')
@@ -281,24 +309,23 @@ const Dashboard: React.FC = () => {
               {expenseChangeLabel}
             </span>
           </div>
-          <div className="flex items-center text-sm">
+          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.monthlyExpenses)}</p>
+          <div className="flex items-center text-xs mt-2">
             <ArrowDownRight 
-              size={16} 
+              size={14} 
               className={expenseChangeLabel.startsWith('-') ? 'text-red-500' : 'text-green-500'} 
             />
-            <span className="text-gray-500 ml-1">
+            <span className="text-gray-500 ml-1 truncate">
               vs. mês anterior ({formatCurrency(data.lastMonthExpenses)})
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Taxa de Economia</h3>
-              <p className="text-2xl font-bold mt-1">{data.savingsRate.toFixed(1)}%</p>
-            </div>
-            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+        {/* Taxa de Economia */}
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-xs font-medium text-gray-500 truncate">Taxa de Economia</h3>
+            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               data.savingsRate >= 20 
                 ? 'bg-green-50 text-green-600' 
                 : data.savingsRate >= 10 
@@ -308,94 +335,124 @@ const Dashboard: React.FC = () => {
               {data.savingsRate >= 20 ? 'Ótimo' : data.savingsRate >= 10 ? 'Bom' : 'Atenção'}
             </span>
           </div>
-          <div className="flex items-center text-sm">
-            <span className="text-gray-500">
-              Meta: 20% da renda
-            </span>
-          </div>
+          <p className="text-xl font-bold mt-1 truncate">{data.savingsRate.toFixed(1)}%</p>
+          <span className="text-xs text-gray-500 mt-2 truncate">Meta: 20% da renda</span>
         </div>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Expenses by Category */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-6">Despesas por Categoria</h2>
-          
-          <div className="space-y-4">
-            {data.expensesByCategory.map((category: any, index: number) => (
-              <div key={index}>
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex items-center">
-                    <div 
-                      className="w-3 h-3 rounded-full mr-2"
-                      style={{ backgroundColor: category.category?.color }}
-                    ></div>
-                    <span className="text-sm font-medium">{category.category?.name}</span>
-                  </div>
-                  <span className="text-sm font-medium">{formatCurrency(category.total)}</span>
-                </div>
-                <div className="h-2 bg-gray-100 rounded-full">
-                  <div 
-                    className="h-full rounded-full"
-                    style={{ 
-                      width: `${category.percentage}%`,
-                      backgroundColor: category.category?.color 
-                    }}
-                  ></div>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>{category.count} transações</span>
-                  <span>{category.percentage.toFixed(1)}%</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Quick Stats Cards */}
+      <QuickStatsCards
+        totalTransactions={data.allTransactions.length}
+        avgDailyExpense={(() => {
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+          const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+          const expenses = data.allTransactions.filter(t => t.type === 'expense' && new Date(t.date) >= startOfMonth && new Date(t.date) <= endOfMonth);
+          const days = (endOfMonth.getDate() - startOfMonth.getDate() + 1) || 1;
+          const total = expenses.reduce((sum, t) => sum + t.amount, 0);
+          return total / days;
+        })()}
+        biggestExpense={(() => {
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+          const expenses = data.allTransactions.filter(t => t.type === 'expense' && new Date(t.date) >= startOfMonth);
+          return expenses.length > 0 ? Math.max(...expenses.map(t => t.amount)) : 0;
+        })()}
+        biggestIncome={(() => {
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+          const incomes = data.allTransactions.filter(t => t.type === 'income' && new Date(t.date) >= startOfMonth);
+          return incomes.length > 0 ? Math.max(...incomes.map(t => t.amount)) : 0;
+        })()}
+        activeAccounts={data.allAccounts.filter(a => a.isactive).length}
+        activeGoals={data.goals.length}
+      />
 
-        {/* Top Transactions */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-6">Maiores Transações</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Despesas</h3>
-              <div className="space-y-3">
-                {data.topExpenses.map((transaction: any) => (
-                  <div key={transaction.id} className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-2 h-2 rounded-full mr-2"
-                        style={{ backgroundColor: transaction.categories?.color }}
-                      ></div>
-                      <span className="text-sm">{transaction.description}</span>
-                    </div>
-                    <span className="text-sm font-medium text-red-600">
-                      {formatCurrency(transaction.amount)}
-                    </span>
-                  </div>
-                ))}
+      {/* Gráficos principais */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <MonthlyBalanceChart transactions={data.allTransactions} />
+        <AccountBalancePieChart accounts={data.allAccounts} />
+        <IncomeByCategoryChart transactions={data.allTransactions} categories={data.categories} />
+        <TotalBalanceLineChart transactions={data.allTransactions} accounts={data.allAccounts} />
+      </div>
+
+      {/* Expenses by Category */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold mb-6">Despesas por Categoria</h2>
+        
+        <div className="space-y-4">
+          {data.expensesByCategory.map((category: any, index: number) => (
+            <div key={index}>
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center">
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: category.category?.color }}
+                  ></div>
+                  <span className="text-sm font-medium">{category.category?.name}</span>
+                </div>
+                <span className="text-sm font-medium">{formatCurrency(category.total)}</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full">
+                <div 
+                  className="h-full rounded-full"
+                  style={{ 
+                    width: `${category.percentage}%`,
+                    backgroundColor: category.category?.color 
+                  }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>{category.count} transações</span>
+                <span>{category.percentage.toFixed(1)}%</span>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
 
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Receitas</h3>
-              <div className="space-y-3">
-                {data.topIncomes.map((transaction: any) => (
-                  <div key={transaction.id} className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-2 h-2 rounded-full mr-2"
-                        style={{ backgroundColor: transaction.categories?.color }}
-                      ></div>
-                      <span className="text-sm">{transaction.description}</span>
-                    </div>
-                    <span className="text-sm font-medium text-green-600">
-                      {formatCurrency(transaction.amount)}
-                    </span>
+      {/* Top Transactions */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold mb-6">Maiores Transações</h2>
+        
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Despesas</h3>
+            <div className="space-y-3">
+              {data.topExpenses.map((transaction: any) => (
+                <div key={transaction.id} className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <div 
+                      className="w-2 h-2 rounded-full mr-2"
+                      style={{ backgroundColor: transaction.categories?.color }}
+                    ></div>
+                    <span className="text-sm">{transaction.description}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-sm font-medium text-red-600">
+                    {formatCurrency(transaction.amount)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Receitas</h3>
+            <div className="space-y-3">
+              {data.topIncomes.map((transaction: any) => (
+                <div key={transaction.id} className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <div 
+                      className="w-2 h-2 rounded-full mr-2"
+                      style={{ backgroundColor: transaction.categories?.color }}
+                    ></div>
+                    <span className="text-sm">{transaction.description}</span>
+                  </div>
+                  <span className="text-sm font-medium text-green-600">
+                    {formatCurrency(transaction.amount)}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

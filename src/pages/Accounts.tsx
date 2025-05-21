@@ -17,10 +17,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
     balance: 0,
     currency: 'BRL',
     color: '#3B82F6',
-    isActive: true,
-    creditLimit: 0,
-    dueDate: 10,
-    closingDate: 5,
+    isactive: true,
+    creditlimit: 0,
+    duedate: 10,
+    closingdate: 5,
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,15 +42,15 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
         balance: account?.balance || 0,
         currency: account?.currency || 'BRL',
         color: account?.color || '#3B82F6',
-        isActive: account?.isActive ?? true,
-        creditLimit: account?.creditLimit || 0,
-        dueDate: account?.dueDate || 10,
-        closingDate: account?.closingDate || 5,
+        isactive: account?.isactive ?? true,
+        creditlimit: account?.creditlimit || 0,
+        duedate: account?.duedate || 10,
+        closingdate: account?.closingdate || 5,
       });
       
       // Format display values
       setDisplayBalance(account ? formatCurrency(account.balance).replace('R$', '').trim() : '');
-      setDisplayCreditLimit(account ? formatCurrency(account.creditLimit || 0).replace('R$', '').trim() : '');
+      setDisplayCreditLimit(account ? formatCurrency(account.creditlimit || 0).replace('R$', '').trim() : '');
       
       setErrors({});
     }
@@ -61,7 +61,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    if (name === 'balance' || name === 'creditLimit') {
+    if (name === 'balance' || name === 'creditlimit') {
       // Remove any non-numeric characters except comma
       const numericValue = value.replace(/[^0-9,]/g, '');
       
@@ -109,8 +109,8 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
       newErrors.name = 'Nome é obrigatório';
     }
     
-    if (formData.type === 'credit' && (!formData.creditLimit || formData.creditLimit <= 0)) {
-      newErrors.creditLimit = 'Limite de crédito é obrigatório para cartões de crédito';
+    if (formData.type === 'credit' && (!formData.creditlimit || formData.creditlimit <= 0)) {
+      newErrors.creditlimit = 'Limite de crédito é obrigatório para cartões de crédito';
     }
     
     setErrors(newErrors);
@@ -143,10 +143,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
             balance: formData.balance,
             currency: formData.currency,
             color: formData.color,
-            isactive: formData.isActive,
-            creditlimit: formData.creditLimit,
-            duedate: formData.dueDate,
-            closingdate: formData.closingDate,
+            isactive: formData.isactive,
+            creditlimit: formData.creditlimit,
+            duedate: formData.duedate,
+            closingdate: formData.closingdate,
           })
           .eq('id', account.id)
           .eq('user_id', user.id);
@@ -162,10 +162,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
             currency: formData.currency,
             color: formData.color,
             user_id: user.id,
-            isactive: formData.isActive,
-            creditlimit: formData.creditLimit,
-            duedate: formData.dueDate,
-            closingdate: formData.closingDate,
+            isactive: formData.isactive,
+            creditlimit: formData.creditlimit,
+            duedate: formData.duedate,
+            closingdate: formData.closingdate,
           }]);
 
         if (error) throw error;
@@ -304,13 +304,13 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
             <div className="flex items-center">
               <input
                 type="checkbox"
-                id="isActive"
-                name="isActive"
-                checked={formData.isActive}
+                id="isactive"
+                name="isactive"
+                checked={formData.isactive}
                 onChange={handleInputChange}
                 className="h-4 w-4 text-blue-600 border-gray-300 rounded"
               />
-              <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="isactive" className="ml-2 block text-sm text-gray-700">
                 Conta ativa
               </label>
             </div>
@@ -320,38 +320,38 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
                 <h3 className="text-sm font-medium text-gray-700">Detalhes do Cartão de Crédito</h3>
                 
                 <div>
-                  <label htmlFor="creditLimit" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="creditlimit" className="block text-sm font-medium text-gray-700 mb-1">
                     Limite de Crédito
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-2.5 text-gray-500">R$</span>
                     <input
                       type="text"
-                      id="creditLimit"
-                      name="creditLimit"
+                      id="creditlimit"
+                      name="creditlimit"
                       value={displayCreditLimit}
                       onChange={handleInputChange}
                       className={`w-full pl-8 pr-3 py-2 border rounded-md ${
-                        errors.creditLimit ? 'border-red-500' : 'border-gray-300'
+                        errors.creditlimit ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="0,00"
                     />
                   </div>
-                  {errors.creditLimit && (
-                    <p className="text-red-500 text-xs mt-1">{errors.creditLimit}</p>
+                  {errors.creditlimit && (
+                    <p className="text-red-500 text-xs mt-1">{errors.creditlimit}</p>
                   )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="closingDate" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="closingdate" className="block text-sm font-medium text-gray-700 mb-1">
                       Dia de Fechamento
                     </label>
                     <input
                       type="number"
-                      id="closingDate"
-                      name="closingDate"
-                      value={formData.closingDate}
+                      id="closingdate"
+                      name="closingdate"
+                      value={formData.closingdate}
                       onChange={handleInputChange}
                       min="1"
                       max="31"
@@ -360,14 +360,14 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
                   </div>
                   
                   <div>
-                    <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="duedate" className="block text-sm font-medium text-gray-700 mb-1">
                       Dia de Vencimento
                     </label>
                     <input
                       type="number"
-                      id="dueDate"
-                      name="dueDate"
-                      value={formData.dueDate}
+                      id="duedate"
+                      name="duedate"
+                      value={formData.duedate}
                       onChange={handleInputChange}
                       min="1"
                       max="31"
@@ -438,10 +438,10 @@ const Accounts: React.FC = () => {
       // Transform the data to match our frontend model
       const transformedData = data.map(account => ({
         ...account,
-        creditLimit: account.creditlimit,
-        dueDate: account.duedate,
-        closingDate: account.closingdate,
-        isActive: account.isactive,
+        creditlimit: account.creditlimit,
+        duedate: account.duedate,
+        closingdate: account.closingdate,
+        isactive: account.isactive,
       }));
 
       setAccounts(transformedData || []);
@@ -539,19 +539,19 @@ const Accounts: React.FC = () => {
   }
 
   const totalBalance = accounts.reduce((total, account) => {
-    if (account.type !== 'credit' && account.isActive) {
+    if (account.type !== 'credit' && account.isactive) {
       return total + account.balance;
     }
     return total;
   }, 0);
 
   const creditCardTotal = accounts
-    .filter(account => account.type === 'credit' && account.isActive)
+    .filter(account => account.type === 'credit' && account.isactive)
     .reduce((total, account) => total + account.balance, 0);
 
   const creditCardLimit = accounts
-    .filter(account => account.type === 'credit' && account.isActive)
-    .reduce((total, account) => total + (account.creditLimit || 0), 0);
+    .filter(account => account.type === 'credit' && account.isactive)
+    .reduce((total, account) => total + (account.creditlimit || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -620,7 +620,7 @@ const Accounts: React.FC = () => {
             {accounts.map(account => (
               <div 
                 key={account.id} 
-                className={`${account.isActive ? 'bg-white' : 'bg-gray-50'} rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow`}
+                className={`${account.isactive ? 'bg-white' : 'bg-gray-50'} rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow`}
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center">
@@ -653,7 +653,7 @@ const Accounts: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className={`text-xl font-bold ${!account.isActive && 'text-gray-400'}`}>
+                <div className={`text-xl font-bold ${!account.isactive && 'text-gray-400'}`}>
                   {formatCurrency(account.balance, account.currency)}
                 </div>
                 
@@ -662,25 +662,25 @@ const Accounts: React.FC = () => {
                     <div className="flex justify-between">
                       <span className="text-gray-500">Limite:</span>
                       <span className="font-medium">
-                        {formatCurrency(account.creditLimit || 0, account.currency)}
+                        {formatCurrency(account.creditlimit || 0, account.currency)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Disponível:</span>
                       <span className="font-medium text-green-600">
-                        {formatCurrency((account.creditLimit || 0) - account.balance, account.currency)}
+                        {formatCurrency((account.creditlimit || 0) - account.balance, account.currency)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Vencimento:</span>
                       <span className="font-medium">
-                        Todo dia {account.dueDate || 1}
+                        Todo dia {account.duedate || 1}
                       </span>
                     </div>
                   </div>
                 )}
                 
-                {!account.isActive && (
+                {!account.isactive && (
                   <div className="mt-2 text-xs text-gray-500 italic">
                     Conta inativa
                   </div>

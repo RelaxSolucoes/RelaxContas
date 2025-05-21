@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { X } from 'lucide-react';
-import { Transaction } from '../../types';
+import { Transaction, Category, Account } from '../../types';
 import { getCurrentDate } from '../../utils/helpers';
 
 interface TransactionModalProps {
@@ -27,8 +27,8 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     notes: '',
   });
 
-  const [categories, setCategories] = useState([]);
-  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -430,7 +430,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               )}
             </div>
 
-            {formData.category_id && selectedCategory?.subcategories?.length > 0 && (
+            {formData.category_id && selectedCategory && Array.isArray(selectedCategory.subcategories) && selectedCategory.subcategories.length > 0 && (
               <div>
                 <label htmlFor="subcategory_id" className="block text-sm font-medium text-gray-700 mb-1">
                   Subcategoria
@@ -443,7 +443,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="">Selecione uma subcategoria</option>
-                  {selectedCategory.subcategories.map((subcategory: any) => (
+                  {Array.isArray(selectedCategory.subcategories) && selectedCategory.subcategories.map((subcategory: any) => (
                     <option key={subcategory.id} value={subcategory.id}>
                       {subcategory.name}
                     </option>
@@ -468,7 +468,16 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <option value="">Selecione uma conta</option>
                 {accounts.map((account: any) => (
                   <option key={account.id} value={account.id}>
-                    {account.name} ({account.type})
+                    {account.name} {(() => {
+                      switch (account.type) {
+                        case 'cash': return '(Dinheiro)';
+                        case 'investment': return '(Investimento)';
+                        case 'credit': return '(Cartão de Crédito)';
+                        case 'bank': return '(Banco)';
+                        case 'other': return '(Outro)';
+                        default: return `(${account.type})`;
+                      }
+                    })()}
                   </option>
                 ))}
               </select>
@@ -545,7 +554,8 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <button
                   type="button"
                   onClick={handleAddTag}
-                  className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-r-md shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition"
+                  className="rounded-r-md bg-gradient-to-r from-blue-400 to-blue-600 text-white font-medium px-5 h-[42px] transition-all duration-200 shadow hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  style={{ minWidth: 110 }}
                 >
                   Adicionar
                 </button>
