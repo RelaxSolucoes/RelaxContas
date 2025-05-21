@@ -263,7 +263,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getTransactionsByDateRange = (startDate: string, endDate: string) => {
     return transactions.filter(t => {
       const transactionDate = new Date(t.date);
-      return transactionDate >= new Date(startDate) && transactionDate <= new Date(endDate);
+      let start = startDate;
+      let end = endDate;
+      if (typeof startDate === 'string' && startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [sy, sm, sd] = startDate.split('-').map(Number);
+        start = new Date(sy, sm - 1, sd);
+      }
+      if (typeof endDate === 'string' && endDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [ey, em, ed] = endDate.split('-').map(Number);
+        end = new Date(ey, em - 1, ed);
+      }
+      return transactionDate >= start && transactionDate <= end;
     });
   };
 

@@ -490,7 +490,8 @@ const Goals: React.FC = () => {
               const formatDeadline = (dateString?: string) => {
                 if (!dateString) return 'Sem prazo definido';
                 
-                const date = new Date(dateString);
+                const [y, m, d] = dateString.split('-').map(Number);
+                const date = new Date(y, m - 1, d);
                 return new Intl.DateTimeFormat('pt-BR').format(date);
               };
               

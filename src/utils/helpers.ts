@@ -23,7 +23,8 @@ export const formatCurrency = (amount: number, currency: string = 'BRL'): string
 // Format date
 export const formatDate = (dateString: string): string => {
   // Add timezone offset to keep the date unchanged
-  const date = new Date(dateString);
+  const [y, m, d] = dateString.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
   const timezoneOffset = date.getTimezoneOffset() * 60000;
   const adjustedDate = new Date(date.getTime() + timezoneOffset);
   
@@ -32,7 +33,8 @@ export const formatDate = (dateString: string): string => {
 
 // Format date for input field (YYYY-MM-DD)
 export const formatDateForInput = (dateString: string): string => {
-  const date = new Date(dateString);
+  const [y, m, d] = dateString.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
   const timezoneOffset = date.getTimezoneOffset() * 60000;
   const adjustedDate = new Date(date.getTime() + timezoneOffset);
   return adjustedDate.toISOString().split('T')[0];

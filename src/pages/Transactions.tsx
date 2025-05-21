@@ -98,8 +98,16 @@ const Transactions: React.FC = () => {
   const filteredTransactions = transactions
     .filter(transaction => {
       if (filters.type !== 'all' && transaction.type !== filters.type) return false;
-      if (filters.startDate && new Date(transaction.date) < new Date(filters.startDate)) return false;
-      if (filters.endDate && new Date(transaction.date) > new Date(filters.endDate)) return false;
+      if (filters.startDate) {
+        const [sy, sm, sd] = filters.startDate.split('-').map(Number);
+        const startDate = new Date(sy, sm - 1, sd);
+        if (new Date(transaction.date) < startDate) return false;
+      }
+      if (filters.endDate) {
+        const [ey, em, ed] = filters.endDate.split('-').map(Number);
+        const endDate = new Date(ey, em - 1, ed);
+        if (new Date(transaction.date) > endDate) return false;
+      }
       if (filters.categoryId && transaction.category_id !== filters.categoryId) return false;
       if (filters.accountId && transaction.account_id !== filters.accountId) return false;
       if (filters.search) {

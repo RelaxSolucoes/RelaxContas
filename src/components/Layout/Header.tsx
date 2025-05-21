@@ -1,31 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Plus, ChevronDown, LogOut, User } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
-const pathNames: Record<string, string> = {
-  '/': 'Painel',
-  '/transactions': 'Transações',
-  '/accounts': 'Contas',
-  '/budgets': 'Orçamentos',
-  '/goals': 'Metas',
-  '/reports': 'Relatórios',
-  '/calculator': 'Calculadoras',
-  '/categories': 'Categorias',
-};
 
 interface HeaderProps {
   onOpenAddTransactionModal: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
-  const pageTitle = pathNames[location.pathname] || 'Página';
   const [userName, setUserName] = useState<string>('Usuário');
   const getGreeting = () => {
     const hour = new Date().getHours();

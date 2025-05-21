@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { formatCurrency } from '../utils/helpers';
 import { Filter, Download, ArrowUpRight, ArrowDownRight, PieChart, BarChart } from 'lucide-react';
+import { Transaction, Category, Account } from '../types';
+import { PieChart as RePieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Line, Legend } from 'recharts';
 
 const Reports: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    transactions: Transaction[];
+    categories: Category[];
+    accounts: Account[];
+  }>({
     transactions: [],
     categories: [],
     accounts: [],
@@ -147,8 +154,11 @@ const Reports: React.FC = () => {
 
   // Format date for display
   const formatDateRange = () => {
-    const start = new Date(filters.startDate);
-    const end = new Date(filters.endDate);
+    // Parse manual para evitar problemas de timezone
+    const [startYear, startMonth, startDay] = filters.startDate.split('-').map(Number);
+    const [endYear, endMonth, endDay] = filters.endDate.split('-').map(Number);
+    const start = new Date(startYear, startMonth - 1, startDay);
+    const end = new Date(endYear, endMonth - 1, endDay);
     return `${start.toLocaleDateString('pt-BR')} - ${end.toLocaleDateString('pt-BR')}`;
   };
 
@@ -160,66 +170,102 @@ const Reports: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Relatórios</h1>
-        
-        <div className="flex flex-wrap gap-2">
+      </div>
+
+      {/* Cards de Resumo */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {/* Receitas */}
+        <div className="flex items-center gap-4 bg-green-50 border border-green-200 rounded-xl shadow p-4">
+          <div className="bg-green-100 text-green-600 rounded-full p-2">
+            <ArrowUpRight size={28} />
+          </div>
+          <div>
+            <div className="text-xs text-green-700 font-semibold uppercase">Receitas</div>
+            <div className="text-xl font-bold text-green-900">{formatCurrency(totals.income)}</div>
+          </div>
+        </div>
+        {/* Despesas */}
+        <div className="flex items-center gap-4 bg-red-50 border border-red-200 rounded-xl shadow p-4">
+          <div className="bg-red-100 text-red-600 rounded-full p-2">
+            <ArrowDownRight size={28} />
+          </div>
+          <div>
+            <div className="text-xs text-red-700 font-semibold uppercase">Despesas</div>
+            <div className="text-xl font-bold text-red-900">{formatCurrency(totals.expense)}</div>
+          </div>
+        </div>
+        {/* Saldo */}
+        <div className="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl shadow p-4">
+          <div className="bg-blue-100 text-blue-600 rounded-full p-2">
+            <PieChart size={28} />
+          </div>
+          <div>
+            <div className="text-xs text-blue-700 font-semibold uppercase">Saldo</div>
+            <div className="text-xl font-bold text-blue-900">{formatCurrency(balance)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filtros */}
+      <div className="bg-white border border-gray-200 rounded-xl p-4 mt-2 shadow-sm">
+        <div className="flex flex-wrap gap-2 items-center w-full">
           {/* Date Range Filter */}
-          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden">
-            <div className="px-3 py-2 bg-gray-100 border-r border-gray-300">
+          <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden h-11">
+            <div className="px-3 py-2 bg-gray-100 border-r border-gray-200 flex items-center h-full">
               <Filter size={18} className="text-gray-500" />
             </div>
             <input
               type="date"
               value={filters.startDate}
+              max={filters.endDate}
               onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-              className="px-3 py-2 border-r border-gray-300"
+              className="px-3 py-2 bg-transparent outline-none border-r border-gray-200 focus:bg-blue-50 transition h-full min-w-[120px]"
             />
             <input
               type="date"
               value={filters.endDate}
+              min={filters.startDate}
               onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-              className="px-3 py-2"
+              className="px-3 py-2 bg-transparent outline-none focus:bg-blue-50 transition h-full min-w-[120px]"
             />
           </div>
-          
           {/* Type Filter */}
           <select
             value={filters.type}
             onChange={(e) => setFilters({...filters, type: e.target.value})}
-            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+            className="px-3 h-11 border border-gray-200 rounded-lg bg-white focus:bg-blue-50 outline-none transition min-w-[150px]"
           >
             <option value="all">Todos os tipos</option>
             <option value="income">Receitas</option>
             <option value="expense">Despesas</option>
           </select>
-          
-          {/* Category Filter */}
+          {/* Filtros de categoria e conta só nas abas de categoria */}
+          {(selectedReport === 'expense-categories' || selectedReport === 'income-categories') && (
+            <>
           <select
             value={filters.categoryId}
             onChange={(e) => setFilters({...filters, categoryId: e.target.value})}
-            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="px-3 h-11 border border-gray-200 rounded-lg bg-white focus:bg-blue-50 outline-none transition min-w-[170px]"
           >
             <option value="">Todas as categorias</option>
-            {data.categories.map((category: any) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
+                {data.categories.map((category) => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
-          
-          {/* Account Filter */}
           <select
             value={filters.accountId}
             onChange={(e) => setFilters({...filters, accountId: e.target.value})}
-            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="px-3 h-11 border border-gray-200 rounded-lg bg-white focus:bg-blue-50 outline-none transition min-w-[150px]"
           >
             <option value="">Todas as contas</option>
-            {data.accounts.map((account: any) => (
-              <option key={account.id} value={account.id}>
-                {account.name}
-              </option>
+                {data.accounts.map((account) => (
+                  <option key={account.id} value={account.id}>{account.name}</option>
             ))}
           </select>
-          
+            </>
+          )}
+        </div>
+        <div className="flex gap-2 w-full justify-end mt-4">
           <button
             onClick={() => setFilters({
               type: 'all',
@@ -228,14 +274,12 @@ const Reports: React.FC = () => {
               categoryId: '',
               accountId: '',
             })}
-            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2"
+            className="flex items-center gap-2 px-5 h-11 rounded-lg border border-blue-500 text-blue-700 bg-white font-semibold shadow-sm hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-150"
           >
-            Limpar Filtros
+            <Filter size={16} /> Limpar Filtros
           </button>
-          
-          <button className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 flex items-center gap-2">
-            <Download size={16} />
-            Exportar
+          <button className="flex items-center gap-2 px-5 h-11 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-150">
+            <Download size={16} /> Exportar
           </button>
         </div>
       </div>
@@ -245,24 +289,6 @@ const Reports: React.FC = () => {
           {error}
         </div>
       )}
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-sm text-blue-700 font-medium">Saldo do Período</p>
-          <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-            {formatCurrency(balance)}
-          </p>
-        </div>
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-          <p className="text-sm text-green-700 font-medium">Total de Receitas</p>
-          <p className="text-2xl font-bold text-green-600">{formatCurrency(totals.income)}</p>
-        </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-          <p className="text-sm text-red-700 font-medium">Total de Despesas</p>
-          <p className="text-2xl font-bold text-red-600">{formatCurrency(totals.expense)}</p>
-        </div>
-      </div>
 
       {/* Report Types */}
       <div className="bg-white rounded-xl border border-gray-200 p-3">
@@ -327,16 +353,48 @@ const Reports: React.FC = () => {
         </div>
         
         {selectedReport === 'expense-categories' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Visualization */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
               {expensesByCategory.length > 0 ? (
-                <div className="relative w-64 h-64">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-500">Total</p>
-                      <p className="font-bold">{formatCurrency(totals.expense)}</p>
+                <div className="relative w-72 h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RePieChart>
+                      <Pie
+                        data={expensesByCategory}
+                        dataKey="total"
+                        nameKey="category.name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={110}
+                        stroke="#fff"
+                        strokeWidth={3}
+                        labelLine={false}
+                      >
+                        {expensesByCategory.map((group, idx) => (
+                          <Cell key={idx} fill={group.category?.color || '#60a5fa'} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={({ active, payload }) => {
+                        if (!active || !payload || !payload[0]) return null;
+                        const entry = payload[0];
+                        return (
+                          <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span style={{ background: entry.color, width: 12, height: 12, borderRadius: 6, display: 'inline-block' }}></span>
+                              <span className="font-semibold text-gray-700">{entry.name}</span>
+                            </div>
+                            <div className="text-gray-600 text-sm">{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                     </div>
+                        );
+                      }} />
+                    </RePieChart>
+                  </ResponsiveContainer>
+                  {/* Valor total centralizado */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-xs text-gray-500">Total</span>
+                    <span className="text-2xl font-bold text-gray-800">{formatCurrency(totals.expense)}</span>
                   </div>
                 </div>
               ) : (
@@ -345,30 +403,23 @@ const Reports: React.FC = () => {
                 </div>
               )}
             </div>
-            
-            {/* Details */}
-            <div>
+            {/* Lista de Categorias */}
               <div className="space-y-3">
-                {expensesByCategory.map((group: any, index: number) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-4 h-4 rounded-full mr-3"
-                        style={{ backgroundColor: group.category?.color }}
-                      ></div>
+              {expensesByCategory.map((group, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 shadow-sm hover:bg-blue-50 transition">
+                  <div className="flex items-center gap-3">
+                    <span className="w-4 h-4 rounded-full" style={{ backgroundColor: group.category?.color || '#60a5fa', display: 'inline-block' }}></span>
                       <div>
-                        <p className="font-medium">{group.category?.name || 'Sem categoria'}</p>
-                        <p className="text-xs text-gray-500">{group.percentage.toFixed(1)}% do total</p>
-                      </div>
+                      <span className="font-semibold text-gray-800">{group.category?.name || 'Sem categoria'}</span>
+                      <span className="ml-2 text-xs text-gray-500">{group.percentage.toFixed(1)}% do total</span>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold">{formatCurrency(group.total)}</p>
-                      <p className="text-xs text-gray-500">{group.count} transações</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-900">{formatCurrency(group.total)}</span>
+                    <div className="text-xs text-gray-500">{group.count} transaç{group.count === 1 ? 'ão' : 'ões'}</div>
                     </div>
                   </div>
                 ))}
-              </div>
-              
               {expensesByCategory.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Sem despesas no período selecionado</p>
@@ -379,16 +430,48 @@ const Reports: React.FC = () => {
         )}
         
         {selectedReport === 'income-categories' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Visualization */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
               {incomesByCategory.length > 0 ? (
-                <div className="relative w-64 h-64">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-500">Total</p>
-                      <p className="font-bold">{formatCurrency(totals.income)}</p>
+                <div className="relative w-72 h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RePieChart>
+                      <Pie
+                        data={incomesByCategory}
+                        dataKey="total"
+                        nameKey="category.name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={110}
+                        stroke="#fff"
+                        strokeWidth={3}
+                        labelLine={false}
+                      >
+                        {incomesByCategory.map((group, idx) => (
+                          <Cell key={idx} fill={group.category?.color || '#60a5fa'} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={({ active, payload }) => {
+                        if (!active || !payload || !payload[0]) return null;
+                        const entry = payload[0];
+                        return (
+                          <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span style={{ background: entry.color, width: 12, height: 12, borderRadius: 6, display: 'inline-block' }}></span>
+                              <span className="font-semibold text-gray-700">{entry.name}</span>
+                            </div>
+                            <div className="text-gray-600 text-sm">{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                     </div>
+                        );
+                      }} />
+                    </RePieChart>
+                  </ResponsiveContainer>
+                  {/* Valor total centralizado */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-xs text-gray-500">Total</span>
+                    <span className="text-2xl font-bold text-gray-800">{formatCurrency(totals.income)}</span>
                   </div>
                 </div>
               ) : (
@@ -397,30 +480,23 @@ const Reports: React.FC = () => {
                 </div>
               )}
             </div>
-            
-            {/* Details */}
-            <div>
+            {/* Lista de Categorias */}
               <div className="space-y-3">
-                {incomesByCategory.map((group: any, index: number) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-4 h-4 rounded-full mr-3"
-                        style={{ backgroundColor: group.category?.color }}
-                      ></div>
+              {incomesByCategory.map((group, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 shadow-sm hover:bg-blue-50 transition">
+                  <div className="flex items-center gap-3">
+                    <span className="w-4 h-4 rounded-full" style={{ backgroundColor: group.category?.color || '#60a5fa', display: 'inline-block' }}></span>
                       <div>
-                        <p className="font-medium">{group.category?.name || 'Sem categoria'}</p>
-                        <p className="text-xs text-gray-500">{group.percentage.toFixed(1)}% do total</p>
-                      </div>
+                      <span className="font-semibold text-gray-800">{group.category?.name || 'Sem categoria'}</span>
+                      <span className="ml-2 text-xs text-gray-500">{group.percentage.toFixed(1)}% do total</span>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold">{formatCurrency(group.total)}</p>
-                      <p className="text-xs text-gray-500">{group.count} transações</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-900">{formatCurrency(group.total)}</span>
+                    <div className="text-xs text-gray-500">{group.count} transaç{group.count === 1 ? 'ão' : 'ões'}</div>
                     </div>
                   </div>
                 ))}
-              </div>
-              
               {incomesByCategory.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Sem receitas no período selecionado</p>
@@ -431,238 +507,208 @@ const Reports: React.FC = () => {
         )}
         
         {selectedReport === 'monthly-summary' && (
-          <div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Despesas Mensais</h3>
-                
-                <div className="space-y-4">
-                  {expensesByCategory.slice(0, 5).map((group: any, index: number) => (
-                    <div key={index} className="space-y-1">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div 
-                            className="w-3 h-3 rounded-full mr-2"
-                            style={{ backgroundColor: group.category?.color }}
-                          ></div>
-                          <span className="text-sm font-medium">{group.category?.name}</span>
-                        </div>
-                        <span className="text-sm font-medium">{formatCurrency(group.total)}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="h-1.5 rounded-full"
-                          style={{ 
-                            width: `${group.percentage}%`,
-                            backgroundColor: group.category?.color
-                          }}
-                        ></div>
-                      </div>
+          (() => {
+            // Gera os últimos 6 meses
+            const now = new Date();
+            const months: { year: number; month: number; label: string }[] = Array.from({ length: 6 }, (_, i) => {
+              const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+              return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('pt-BR', { month: 'short', year: '2-digit' }) };
+            });
+            return (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                {/* Gráfico de Barras */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow flex flex-col items-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Balanço Mensal</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ReBarChart data={months.map(({ year, month, label }) => {
+                      const monthTransactions = data.transactions.filter(t => {
+                        const d = new Date(t.date);
+                        return d.getFullYear() === year && d.getMonth() === month;
+                      });
+                      const income = monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+                      const expense = monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+                      return {
+                        name: label,
+                        Receitas: income,
+                        Despesas: expense,
+                        Saldo: income - expense,
+                      };
+                    })} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
+                      <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
+                      <Tooltip content={({ active, payload, label }) => {
+                        if (!active || !payload) return null;
+                        return (
+                          <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                            <div className="font-semibold text-gray-700 mb-1">{label}</div>
+                            {payload.map((entry, i) => (
+                              <div key={i} className="flex items-center gap-2 mb-1">
+                                <span style={{ background: entry.color, width: 10, height: 10, borderRadius: 5, display: 'inline-block' }}></span>
+                                <span className="text-sm text-gray-600">{entry.name}:</span>
+                                <span className="font-bold" style={{ color: entry.color }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
                     </div>
                   ))}
-                  
-                  {expensesByCategory.length > 5 && (
-                    <div className="pt-2 border-t border-gray-200">
-                      <p className="text-sm text-gray-500">
-                        + {expensesByCategory.length - 5} outras categorias
-                      </p>
                     </div>
-                  )}
-                  
-                  {expensesByCategory.length === 0 && (
-                    <div className="text-center py-4">
-                      <p className="text-gray-500">Sem despesas no período selecionado</p>
-                    </div>
-                  )}
+                        );
+                      }} />
+                      <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+                      <Bar dataKey="Receitas" fill="#22c55e" radius={[6, 6, 0, 0]} barSize={28} />
+                      <Bar dataKey="Despesas" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={28} />
+                      <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} strokeDasharray="5 2" />
+                    </ReBarChart>
+                  </ResponsiveContainer>
                 </div>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Receitas Mensais</h3>
-                
-                <div className="space-y-4">
-                  {incomesByCategory.slice(0, 5).map((group: any, index: number) => (
-                    <div key={index} className="space-y-1">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div 
-                            className="w-3 h-3 rounded-full mr-2"
-                            style={{ backgroundColor: group.category?.color }}
-                          ></div>
-                          <span className="text-sm font-medium">{group.category?.name}</span>
-                        </div>
-                        <span className="text-sm font-medium">{formatCurrency(group.total)}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="h-1.5 rounded-full"
-                          style={{ 
-                            width: `${group.percentage}%`,
-                            backgroundColor: group.category?.color
-                          }}
-                        ></div>
-                      </div>
+                {/* Cards de Totais e Taxa de Economia */}
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex flex-col items-center">
+                      <span className="text-xs text-green-700 font-semibold uppercase">Receitas</span>
+                      <span className="text-xl font-bold text-green-900">{formatCurrency(totals.income)}</span>
                     </div>
-                  ))}
-                  
-                  {incomesByCategory.length > 5 && (
-                    <div className="pt-2 border-t border-gray-200">
-                      <p className="text-sm text-gray-500">
-                        + {incomesByCategory.length - 5} outras categorias
-                      </p>
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col items-center">
+                      <span className="text-xs text-red-700 font-semibold uppercase">Despesas</span>
+                      <span className="text-xl font-bold text-red-900">{formatCurrency(totals.expense)}</span>
                     </div>
-                  )}
-                  
-                  {incomesByCategory.length === 0 && (
-                    <div className="text-center py-4">
-                      <p className="text-gray-500">Sem receitas no período selecionado</p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col items-center">
+                      <span className="text-xs text-blue-700 font-semibold uppercase">Balanço Final</span>
+                      <span className={`text-xl font-bold ${balance >= 0 ? 'text-blue-900' : 'text-red-700'}`}>{formatCurrency(balance)}</span>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg">
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Resumo do Período</h3>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Total de Receitas</p>
-                    <p className="text-xl font-bold text-green-600">{formatCurrency(totals.income)}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Total de Despesas</p>
-                    <p className="text-xl font-bold text-red-600">{formatCurrency(totals.expense)}</p>
+                  <div className="bg-white border border-gray-200 rounded-xl p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">Taxa de Economia</span>
+                      <span className="text-sm font-semibold text-gray-800">{totals.income > 0 ? Math.round((balance / totals.income) * 100) : 0}%</span>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Balanço Final</p>
-                    <p className={`text-xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                      {formatCurrency(balance)}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium">Taxa de Economia</p>
-                    <p className="text-sm font-medium">
-                      {totals.income > 0 ? Math.round((balance / totals.income) * 100) : 0}%
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full ${balance >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
-                      style={{ 
-                        width: `${totals.income > 0 ? Math.max(0, Math.min(100, (balance / totals.income) * 100)) : 0}%`
-                      }}
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className={`h-3 rounded-full ${balance >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
+                        style={{ width: `${totals.income > 0 ? Math.max(0, Math.min(100, (balance / totals.income) * 100)) : 0}%` }}
                     ></div>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
                     {balance >= 0 
                       ? `Você economizou ${Math.round((balance / totals.income) * 100)}% da sua renda neste período`
-                      : 'Suas despesas superaram suas receitas neste período'
-                    }
+                        : 'Suas despesas superaram suas receitas neste período'}
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {selectedReport === 'cash-flow' && (
-          <div className="space-y-6">
-            <div className="flex justify-center">
-              <div className="w-full max-w-3xl">
-                <div className="relative h-[300px] flex items-end">
-                  <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gray-200"></div>
-                  <div className="absolute left-0 right-0 bottom-0 h-[1px] bg-gray-200"></div>
-                  
-                  <div className="w-full flex h-4/5 items-end">
-                    <div className="flex-1 flex flex-col items-center">
-                      <div className="w-16 h-40 bg-green-500 rounded-t-md"></div>
-                      <p className="text-sm mt-2">Receitas</p>
-                      <p className="text-xs text-gray-500">{formatCurrency(totals.income)}</p>
-                    </div>
-                    <div className="flex-1 flex flex-col items-center">
-                      <div className="w-16 h-24 bg-red-500 rounded-t-md"></div>
-                      <p className="text-sm mt-2">Despesas</p>
-                      <p className="text-xs text-gray-500">{formatCurrency(totals.expense)}</p>
-                    </div>
-                    <div className="flex-1 flex flex-col items-center">
-                      <div className={`w-16 ${balance >= 0 ? 'h-16 bg-blue-500' : 'h-8 bg-red-500'} rounded-t-md`}></div>
-                      <p className="text-sm mt-2">Balanço</p>
-                      <p className="text-xs text-gray-500">{formatCurrency(Math.abs(balance))}</p>
-                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-medium text-gray-800 mb-3">Maiores Receitas</h3>
-                
-                <div className="space-y-3">
-                  {data.transactions
-                    .filter((t: any) => t.type === 'income')
-                    .sort((a: any, b: any) => b.amount - a.amount)
-                    .slice(0, 5)
-                    .map((transaction: any, index: number) => {
-                      const category = transaction.categories;
-                      
-                      return (
-                        <div key={index} className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <div 
-                              className="w-3 h-3 rounded-full mr-2"
-                              style={{ backgroundColor: category?.color }}
-                            ></div>
-                            <span className="text-sm">{transaction.description}</span>
-                          </div>
-                          <span className="font-medium text-green-600">{formatCurrency(transaction.amount)}</span>
+            );
+          })()
+        )}
+        
+        {selectedReport === 'cash-flow' && (
+          (() => {
+            // Gera os últimos 6 meses
+            const now = new Date();
+            const months: { year: number; month: number; label: string }[] = Array.from({ length: 6 }, (_, i) => {
+              const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+              return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('pt-BR', { month: 'short', year: '2-digit' }) };
+            });
+            const cashFlowData = months.map(({ year, month, label }) => {
+              const monthTransactions = data.transactions.filter(t => {
+                const d = new Date(t.date);
+                return d.getFullYear() === year && d.getMonth() === month;
+              });
+              const income = monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+              const expense = monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+              return {
+                name: label,
+                Receitas: income,
+                Despesas: expense,
+                Saldo: income - expense,
+              };
+            });
+            // Maiores receitas e despesas do período filtrado
+            const topIncomes = data.transactions
+              .filter(t => t.type === 'income')
+              .sort((a, b) => b.amount - a.amount)
+              .slice(0, 5);
+            const topExpenses = data.transactions
+              .filter(t => t.type === 'expense')
+              .sort((a, b) => b.amount - a.amount)
+              .slice(0, 5);
+            return (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Gráfico de Barras Agrupadas */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow flex flex-col items-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Fluxo de Caixa</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ReBarChart data={cashFlowData} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
+                      <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
+                      <Tooltip content={({ active, payload, label }) => {
+                        if (!active || !payload) return null;
+                        return (
+                          <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                            <div className="font-semibold text-gray-700 mb-1">{label}</div>
+                            {payload.map((entry, i) => (
+                              <div key={i} className="flex items-center gap-2 mb-1">
+                                <span style={{ background: entry.color, width: 10, height: 10, borderRadius: 5, display: 'inline-block' }}></span>
+                                <span className="text-sm text-gray-600">{entry.name}:</span>
+                                <span className="font-bold" style={{ color: entry.color }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
+                    </div>
+                            ))}
+                    </div>
+                        );
+                      }} />
+                      <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+                      <Bar dataKey="Receitas" fill="#22c55e" radius={[6, 6, 0, 0]} barSize={28} />
+                      <Bar dataKey="Despesas" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={28} />
+                      <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} strokeDasharray="5 2" />
+                    </ReBarChart>
+                  </ResponsiveContainer>
+                </div>
+                {/* Cards de Maiores Receitas e Despesas */}
+                <div className="flex flex-col gap-6 w-full">
+                  <div className="bg-white border border-gray-200 rounded-xl p-4 shadow">
+                    <h4 className="font-medium text-gray-800 mb-3">Maiores Receitas</h4>
+                    <div className="space-y-2">
+                      {topIncomes.length === 0 && <p className="text-gray-500 text-sm">Sem receitas no período</p>}
+                      {topIncomes.map((transaction, idx) => {
+                        let catColor = '#22c55e';
+                        const cat = transaction.category_id ? data.categories.find(c => c.id === transaction.category_id) : undefined;
+                        if (cat && cat.color) catColor = cat.color;
+                        return (
+                          <div key={idx} className="flex items-center justify-between py-1 px-2 rounded hover:bg-green-50 transition">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: catColor, display: 'inline-block' }}></span>
+                              <span className="text-sm font-medium text-gray-700">{transaction.description}</span>
+                              <span className="text-xs text-gray-400 ml-2">{transaction.date && new Date(transaction.date).toLocaleDateString('pt-BR')}</span>
+              </div>
+                            <span className="font-semibold text-green-700">{formatCurrency(transaction.amount)}</span>
                         </div>
                       );
                     })}
-                  
-                  {data.transactions.filter((t: any) => t.type === 'income').length === 0 && (
-                    <p className="text-center text-gray-500 py-4">Sem receitas no período</p>
-                  )}
                 </div>
               </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-medium text-gray-800 mb-3">Maiores Despesas</h3>
-                
-                <div className="space-y-3">
-                  {data.transactions
-                    .filter((t: any) => t.type === 'expense')
-                    .sort((a: any, b: any) => b.amount - a.amount)
-                    .slice(0, 5)
-                    .map((transaction: any, index: number) => {
-                      const category = transaction.categories;
-                      
+                  <div className="bg-white border border-gray-200 rounded-xl p-4 shadow">
+                    <h4 className="font-medium text-gray-800 mb-3">Maiores Despesas</h4>
+                    <div className="space-y-2">
+                      {topExpenses.length === 0 && <p className="text-gray-500 text-sm">Sem despesas no período</p>}
+                      {topExpenses.map((transaction, idx) => {
+                        let catColor = '#ef4444';
+                        const cat = transaction.category_id ? data.categories.find(c => c.id === transaction.category_id) : undefined;
+                        if (cat && cat.color) catColor = cat.color;
                       return (
-                        <div key={index} className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <div 
-                              className="w-3 h-3 rounded-full mr-2"
-                              style={{ backgroundColor: category?.color }}
-                            ></div>
-                            <span className="text-sm">{transaction.description}</span>
-                          </div>
-                          <span className="font-medium text-red-600">{formatCurrency(transaction.amount)}</span>
+                          <div key={idx} className="flex items-center justify-between py-1 px-2 rounded hover:bg-red-50 transition">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: catColor, display: 'inline-block' }}></span>
+                              <span className="text-sm font-medium text-gray-700">{transaction.description}</span>
+                              <span className="text-xs text-gray-400 ml-2">{transaction.date && new Date(transaction.date).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <span className="font-semibold text-red-700">{formatCurrency(transaction.amount)}</span>
                         </div>
                       );
                     })}
-                  
-                  {data.transactions.filter((t: any) => t.type === 'expense').length === 0 && (
-                    <p className="text-center text-gray-500 py-4">Sem despesas no período</p>
-                  )}
                 </div>
               </div>
             </div>
           </div>
+            );
+          })()
         )}
       </div>
     </div>
