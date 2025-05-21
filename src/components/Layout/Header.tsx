@@ -27,6 +27,15 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const pageTitle = pathNames[location.pathname] || 'Página';
   const [userName, setUserName] = useState<string>('Usuário');
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return { text: 'Bom dia', emoji: '☀️' };
+    if (hour < 18) return { text: 'Boa tarde', emoji: '🌤️' };
+    return { text: 'Boa noite', emoji: '🌙' };
+  };
+  const firstName = userName.split(' ')[0];
+  const today = new Date();
+  const todayStr = today.toLocaleDateString('pt-BR');
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
@@ -111,7 +120,19 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight">{pageTitle}</h1>
+            <div>
+              <div className="flex items-end gap-4">
+                <div className="flex flex-col items-start">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl sm:text-2xl" style={{ lineHeight: 1 }}>{getGreeting().emoji}</span>
+                    <span className="text-2xl sm:text-2xl font-extrabold text-gray-800 tracking-tight">{getGreeting().text}, {firstName}</span>
+                  </div>
+                  <div className="text-xs text-gray-500 font-medium mt-0.5 ml-[2.2rem] sm:ml-[2.6rem]">
+                    {todayStr}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div className="flex items-center gap-4">
