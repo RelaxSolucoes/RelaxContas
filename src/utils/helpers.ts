@@ -121,3 +121,20 @@ export const calculateSpendingTrend = (
   
   return ((currentTotal - previousTotal) / previousTotal) * 100;
 };
+
+// Máscara para telefone brasileiro
+export const formatPhone = (value: string): string => {
+  // Remove tudo que não for número
+  let cleaned = value.replace(/\D/g, '');
+  // Aplica a máscara
+  if (cleaned.length > 11) cleaned = cleaned.slice(0, 11);
+  if (cleaned.length > 10) {
+    return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  } else if (cleaned.length > 6) {
+    return cleaned.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+  } else if (cleaned.length > 2) {
+    return cleaned.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  } else {
+    return cleaned;
+  }
+};

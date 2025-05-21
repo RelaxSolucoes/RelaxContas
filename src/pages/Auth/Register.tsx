@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import { Eye, EyeOff } from 'lucide-react';
+import { formatPhone } from '../../utils/helpers';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -22,9 +23,14 @@ const Register: React.FC = () => {
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let newValue = value;
+    if (name === 'phone') {
+      newValue = formatPhone(value);
+    }
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: newValue,
     });
   };
 
@@ -62,7 +68,14 @@ const Register: React.FC = () => {
         if (profileError) throw profileError;
       }
 
-      navigate('/login');
+      // Login automático após cadastro
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (loginError) throw loginError;
+
+      navigate('/');
     } catch (error: any) {
       setError(error.message || 'Erro ao criar conta');
     } finally {
@@ -76,7 +89,7 @@ const Register: React.FC = () => {
       <div className="hidden md:flex md:w-1/2 bg-blue-700 text-white flex-col justify-center items-center p-10 relative overflow-hidden">
         <div className="z-10">
           <div className="flex items-center mb-8">
-            <span className="text-2xl font-bold tracking-tight">RelaxContas</span>
+            <span className="text-2xl font-bold tracking-tight">Relax Contas</span>
           </div>
           <div className="mb-8">
             <h2 className="text-3xl font-extrabold mb-2">Rápido, fácil e seguro</h2>
@@ -112,20 +125,6 @@ const Register: React.FC = () => {
                 entrar na sua conta existente
               </Link>
             </p>
-          </div>
-          {/* Botões sociais (apenas visual, sem funcionalidade extra) */}
-          <div className="flex flex-col gap-3">
-            <button type="button" className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 font-medium hover:bg-gray-50 transition">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" /> Cadastrar com Google
-            </button>
-            <button type="button" className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 font-medium hover:bg-gray-50 transition">
-              <img src="https://www.svgrepo.com/show/303128/apple-logo.svg" alt="Apple" className="w-5 h-5" /> Cadastrar com Apple
-            </button>
-          </div>
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-gray-200" />
-            <span className="mx-2 text-gray-400 text-xs">ou com email</span>
-            <div className="flex-grow border-t border-gray-200" />
           </div>
           <form className="space-y-6" onSubmit={handleRegister}>
             {error && (

@@ -43,7 +43,7 @@ const Login: React.FC = () => {
       <div className="hidden md:flex md:w-1/2 bg-blue-700 text-white flex-col justify-center items-center p-10 relative overflow-hidden">
         <div className="z-10">
           <div className="flex items-center mb-8">
-            <span className="text-2xl font-bold tracking-tight">RelaxContas</span>
+            <span className="text-2xl font-bold tracking-tight">Relax Contas</span>
           </div>
           <div className="mb-8">
             <h2 className="text-3xl font-extrabold mb-2">Rápido, fácil e seguro</h2>
@@ -79,20 +79,6 @@ const Login: React.FC = () => {
                 criar uma nova conta
               </Link>
             </p>
-          </div>
-          {/* Botões sociais (apenas visual, sem funcionalidade extra) */}
-          <div className="flex flex-col gap-3">
-            <button type="button" className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 font-medium hover:bg-gray-50 transition">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" /> Entrar com Google
-            </button>
-            <button type="button" className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 font-medium hover:bg-gray-50 transition">
-              <img src="https://www.svgrepo.com/show/303128/apple-logo.svg" alt="Apple" className="w-5 h-5" /> Entrar com Apple
-            </button>
-          </div>
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-gray-200" />
-            <span className="mx-2 text-gray-400 text-xs">ou com email</span>
-            <div className="flex-grow border-t border-gray-200" />
           </div>
           <form className="space-y-6" onSubmit={handleLogin}>
             {error && (
