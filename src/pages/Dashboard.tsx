@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { formatCurrency } from '../utils/helpers';
-import { Search, Bell, ChevronDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+
+// Definição de tipos para os dados do dashboard
+interface DashboardData {
+  totalBalance: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  lastMonthIncome: number;
+  lastMonthExpenses: number;
+  expensesByCategory: any[];
+  incomeByCategory: any[];
+  recentTransactions: any[];
+  monthlyTrends: any[];
+  topExpenses: any[];
+  topIncomes: any[];
+  savingsRate: number;
+  budgetProgress: any[];
+}
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [data, setData] = useState({
+  const [data, setData] = useState<DashboardData>({
     totalBalance: 0,
     monthlyIncome: 0,
     monthlyExpenses: 0,
@@ -175,13 +193,25 @@ const Dashboard: React.FC = () => {
     return <div className="p-4">Carregando...</div>;
   }
 
-  const incomeChange = data.lastMonthIncome > 0 
-    ? ((data.monthlyIncome - data.lastMonthIncome) / data.lastMonthIncome) * 100 
-    : 0;
+  let incomeChangeLabel = '';
+  if (data.lastMonthIncome === 0 && data.monthlyIncome > 0) {
+    incomeChangeLabel = 'Novo';
+  } else if (data.lastMonthIncome === 0 && data.monthlyIncome === 0) {
+    incomeChangeLabel = '0%';
+  } else {
+    const pct = ((data.monthlyIncome - data.lastMonthIncome) / data.lastMonthIncome) * 100;
+    incomeChangeLabel = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  }
 
-  const expenseChange = data.lastMonthExpenses > 0 
-    ? ((data.monthlyExpenses - data.lastMonthExpenses) / data.lastMonthExpenses) * 100 
-    : 0;
+  let expenseChangeLabel = '';
+  if (data.lastMonthExpenses === 0 && data.monthlyExpenses > 0) {
+    expenseChangeLabel = 'Novo';
+  } else if (data.lastMonthExpenses === 0 && data.monthlyExpenses === 0) {
+    expenseChangeLabel = '0%';
+  } else {
+    const pct = ((data.monthlyExpenses - data.lastMonthExpenses) / data.lastMonthExpenses) * 100;
+    expenseChangeLabel = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  }
 
   return (
     <div className="space-y-6">
@@ -215,17 +245,19 @@ const Dashboard: React.FC = () => {
               <p className="text-2xl font-bold mt-1">{formatCurrency(data.monthlyIncome)}</p>
             </div>
             <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-              incomeChange >= 0 
-                ? 'bg-green-50 text-green-600' 
-                : 'bg-red-50 text-red-600'
+              incomeChangeLabel === 'Novo' || incomeChangeLabel.startsWith('+')
+                ? 'bg-green-50 text-green-600'
+                : incomeChangeLabel.startsWith('-')
+                  ? 'bg-red-50 text-red-600'
+                  : 'bg-gray-100 text-gray-500'
             }`}>
-              {incomeChange >= 0 ? '+' : ''}{incomeChange.toFixed(1)}%
+              {incomeChangeLabel}
             </span>
           </div>
           <div className="flex items-center text-sm">
             <ArrowUpRight 
               size={16} 
-              className={incomeChange >= 0 ? 'text-green-500' : 'text-red-500'} 
+              className={incomeChangeLabel.startsWith('+') ? 'text-green-500' : 'text-red-500'} 
             />
             <span className="text-gray-500 ml-1">
               vs. mês anterior ({formatCurrency(data.lastMonthIncome)})
@@ -240,17 +272,19 @@ const Dashboard: React.FC = () => {
               <p className="text-2xl font-bold mt-1">{formatCurrency(data.monthlyExpenses)}</p>
             </div>
             <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-              expenseChange <= 0 
-                ? 'bg-green-50 text-green-600' 
-                : 'bg-red-50 text-red-600'
+              expenseChangeLabel === 'Novo' || expenseChangeLabel.startsWith('-')
+                ? 'bg-red-50 text-red-600'
+                : expenseChangeLabel.startsWith('+')
+                  ? 'bg-green-50 text-green-600'
+                  : 'bg-gray-100 text-gray-500'
             }`}>
-              {expenseChange >= 0 ? '+' : ''}{expenseChange.toFixed(1)}%
+              {expenseChangeLabel}
             </span>
           </div>
           <div className="flex items-center text-sm">
             <ArrowDownRight 
               size={16} 
-              className={expenseChange <= 0 ? 'text-green-500' : 'text-red-500'} 
+              className={expenseChangeLabel.startsWith('-') ? 'text-red-500' : 'text-green-500'} 
             />
             <span className="text-gray-500 ml-1">
               vs. mês anterior ({formatCurrency(data.lastMonthExpenses)})
@@ -371,9 +405,9 @@ const Dashboard: React.FC = () => {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold">Transações Recentes</h2>
-          <button className="text-blue-600 text-sm hover:underline">
+          <Link to="/transactions" className="text-blue-600 text-sm hover:underline">
             Ver todas
-          </button>
+          </Link>
         </div>
 
         <div className="space-y-4">

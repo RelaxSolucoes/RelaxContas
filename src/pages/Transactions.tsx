@@ -3,12 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import { Filter, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import TransactionModal from '../components/Transactions/TransactionModal';
-import { Transaction } from '../types';
+import { Transaction, Category, Account } from '../types';
+import * as XLSX from 'xlsx';
 
 const Transactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState([]);
-  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -188,6 +189,29 @@ const Transactions: React.FC = () => {
     }
   };
 
+  // Função para exportar transações filtradas para Excel
+  const handleExport = () => {
+    if (filteredTransactions.length === 0) {
+      alert('Não há transações para exportar.');
+      return;
+    }
+    // Monta os dados para exportação
+    const exportData = filteredTransactions.map(t => ({
+      Data: formatDate(t.date),
+      Descrição: t.description,
+      Categoria: categories.find((c: any) => c.id === t.category_id)?.name || '',
+      Conta: accounts.find((a: any) => a.id === t.account_id)?.name || '',
+      Valor: t.amount,
+      Tipo: t.type === 'income' ? 'Receita' : 'Despesa',
+      Tags: t.tags?.join(', ') || '',
+      Observações: t.notes || '',
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Transações');
+    XLSX.writeFile(workbook, 'transacoes.xlsx');
+  };
+
   if (loading) {
     return <div className="p-4">Carregando...</div>;
   }
@@ -197,9 +221,9 @@ const Transactions: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Transações</h1>
         <div className="flex items-center gap-2">
-          <button className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2">
+          <button className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 flex items-center gap-2" onClick={handleExport}>
             <Download size={16} />
-            Exportar
+            <span>Exportar</span>
           </button>
           <button
             onClick={() => {

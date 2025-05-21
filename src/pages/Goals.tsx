@@ -410,7 +410,7 @@ const Goals: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-800">Metas Financeiras</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 text-sm"
+          className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 text-sm flex items-center gap-2"
         >
           <Plus size={16} />
           Nova Meta
