@@ -343,7 +343,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, category
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? 'Salvando...' : category ? 'Atualizar' : 'Adicionar'}
@@ -478,7 +478,7 @@ const Settings: React.FC = () => {
           </div>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2"
           >
             <Plus size={16} />
             Nova Categoria

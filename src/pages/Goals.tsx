@@ -300,7 +300,7 @@ const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, goal }) => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 text-white bg-gradient-to-r from-blue-400 to-blue-700 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? 'Salvando...' : goal ? 'Atualizar' : 'Adicionar'}
@@ -410,7 +410,7 @@ const Goals: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-800">Metas Financeiras</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 text-sm"
         >
           <Plus size={16} />
           Nova Meta
@@ -473,7 +473,7 @@ const Goals: React.FC = () => {
             <p className="text-gray-500 mb-4">Você ainda não tem metas cadastradas</p>
             <button
               onClick={() => handleOpenModal()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 text-sm"
             >
               Criar Primeira Meta
             </button>

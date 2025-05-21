@@ -279,7 +279,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2"
                 disabled={loading}
               >
                 {loading ? 'Salvando...' : budget ? 'Atualizar' : 'Adicionar'}
@@ -413,7 +413,7 @@ const Budgets: React.FC = () => {
           </div>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
           >
             <Plus size={16} />
             Novo Orçamento
@@ -449,7 +449,7 @@ const Budgets: React.FC = () => {
             <p className="text-gray-500 mb-4">Você ainda não tem orçamentos definidos</p>
             <button
               onClick={() => handleOpenModal()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 rounded-md text-sm font-medium"
             >
               Criar Primeiro Orçamento
             </button>

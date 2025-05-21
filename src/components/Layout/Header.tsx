@@ -26,6 +26,10 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const pageTitle = pathNames[location.pathname] || 'Página';
+  const [userName, setUserName] = useState<string>('Usuário');
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
   
   const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -46,6 +50,57 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('name, email')
+          .eq('id', user.id)
+          .single();
+        if (profile?.name) {
+          setUserName(profile.name);
+        } else if (user.email) {
+          setUserName(user.email);
+        }
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const fetchNotifications = async () => {
+    setLoadingNotifications(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setNotifications([]);
+        setHasUnread(false);
+        setLoadingNotifications(false);
+        return;
+      }
+      const { data: notifs } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      setNotifications(notifs || []);
+      setHasUnread((notifs || []).some(n => !n.read));
+    } catch (err) {
+      setNotifications([]);
+      setHasUnread(false);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showNotifications) {
+      fetchNotifications();
+    }
+    // eslint-disable-next-line
+  }, [showNotifications]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -56,33 +111,28 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-gray-800">{pageTitle}</h1>
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Pesquisar..."
-                className="w-64 pl-10 pr-4 py-2 bg-gray-100 rounded-lg"
-              />
-            </div>
+            <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight">{pageTitle}</h1>
           </div>
           
           <div className="flex items-center gap-4">
             <button
               onClick={onOpenAddTransactionModal}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors"
+              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold flex items-center gap-2 hover:from-blue-500 hover:to-blue-800 transition"
             >
               <Plus size={16} />
               <span className="hidden sm:inline">Nova Transação</span>
             </button>
             
             <div className="relative" ref={notificationsRef}>
-              <button 
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative"
+              <button
+                className="relative flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-700 text-white p-2 rounded-xl shadow hover:from-blue-500 hover:to-blue-800 transition"
                 onClick={() => setShowNotifications(!showNotifications)}
+                style={{ minWidth: 40, minHeight: 40 }}
               >
                 <Bell size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                {hasUnread && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                )}
               </button>
 
               {showNotifications && (
@@ -91,14 +141,17 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
                     <h3 className="font-semibold">Notificações</h3>
                   </div>
                   <div className="max-h-[400px] overflow-y-auto">
-                    <div className="px-4 py-3 hover:bg-gray-50">
-                      <p className="text-sm font-medium">Fatura do cartão próxima do vencimento</p>
-                      <p className="text-xs text-gray-500 mt-1">Vence em 3 dias</p>
-                    </div>
-                    <div className="px-4 py-3 hover:bg-gray-50">
-                      <p className="text-sm font-medium">Meta "Viagem" atingiu 80%</p>
-                      <p className="text-xs text-gray-500 mt-1">Faltam R$ 1.000,00</p>
-                    </div>
+                    {loadingNotifications ? (
+                      <div className="px-4 py-3 text-gray-500 text-sm">Carregando...</div>
+                    ) : notifications.length === 0 ? (
+                      <div className="px-4 py-3 text-gray-500 text-sm">Sem notificações</div>
+                    ) : notifications.map((notif) => (
+                      <div key={notif.id} className="px-4 py-3 hover:bg-gray-50 border-b last:border-b-0">
+                        <p className="text-sm font-medium">{notif.title}</p>
+                        <p className="text-xs text-gray-500 mt-1">{notif.description}</p>
+                        <p className="text-[10px] text-gray-400 mt-1">{new Date(notif.created_at).toLocaleString('pt-BR')}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -110,9 +163,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
                 className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                  U
+                  {userName.charAt(0).toUpperCase()}
                 </div>
-                <span className="hidden sm:inline text-sm font-medium text-gray-700">Usuário</span>
+                <span className="hidden sm:inline text-sm font-medium text-gray-700">{userName}</span>
                 <ChevronDown size={16} className="text-gray-500" />
               </button>
 

@@ -243,7 +243,7 @@ const Profile: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-6 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition disabled:opacity-50"
             >
               {loading ? 'Salvando...' : 'Salvar alterações'}
             </button>

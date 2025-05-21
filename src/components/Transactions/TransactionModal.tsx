@@ -545,7 +545,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <button
                   type="button"
                   onClick={handleAddTag}
-                  className="bg-blue-600 text-white px-3 py-2 rounded-r-md hover:bg-blue-700"
+                  className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-r-md shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition"
                 >
                   Adicionar
                 </button>
@@ -578,7 +578,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 text-white bg-gradient-to-r from-blue-400 to-blue-700 rounded-md shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? 'Salvando...' : transaction ? 'Atualizar' : 'Adicionar'}

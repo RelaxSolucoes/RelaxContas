@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,6 +12,8 @@ import {
   X,
   FolderTree
 } from 'lucide-react';
+import { formatCurrency } from '../../utils/helpers';
+import { createClient } from '@supabase/supabase-js';
 
 const menuItems = [
   { path: '/', label: 'Painel', icon: <LayoutDashboard size={20} /> },
@@ -32,6 +34,41 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) => {
   const location = useLocation();
+  const [totalBalance, setTotalBalance] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const supabase = createClient(
+          import.meta.env.VITE_SUPABASE_URL,
+          import.meta.env.VITE_SUPABASE_ANON_KEY
+        );
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Usuário não autenticado');
+        const { data: accounts } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', user.id);
+        const total = accounts?.reduce((sum, account) => {
+          if (account.type !== 'credit') {
+            return sum + account.balance;
+          }
+          return sum;
+        }, 0) || 0;
+        setTotalBalance(total);
+      } catch (err: any) {
+        setError('Erro ao buscar saldo');
+        setTotalBalance(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBalance();
+  }, []);
 
   const sidebarClasses = `bg-[#f4f8ff] border-r border-[#dbeafe] transition-all duration-300 z-20 shadow-none
     ${isMobile
@@ -96,7 +133,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
           <div className="px-6 pb-6 mt-auto">
             <div className="bg-white border border-[#dbeafe] rounded-2xl p-4 flex flex-col items-center shadow-sm">
               <p className="text-xs font-semibold text-[#60a5fa] mb-1">Saldo Total</p>
-              <p className="text-xl font-bold text-[#1e3a8a] mb-3">R$ 12.345,67</p>
+              <p className="text-xl font-bold text-[#1e3a8a] mb-3">
+                {loading ? 'Carregando...' : error ? error : formatCurrency(totalBalance || 0)}
+              </p>
               <div className="w-full flex justify-end mb-1">
                 <span className="inline-block bg-blue-100 text-blue-700 text-[11px] font-semibold px-2 py-0.5 rounded-full">Em breve</span>
               </div>

@@ -68,19 +68,19 @@ const IncomeExpenseChart: React.FC = () => {
         
         <div className="space-x-1 text-sm">
           <button 
-            className={`px-2 py-1 rounded ${selectedPeriod === '3months' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            className={`px-2 py-1 rounded ${selectedPeriod === '3months' ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
             onClick={() => setSelectedPeriod('3months')}
           >
             3M
           </button>
           <button 
-            className={`px-2 py-1 rounded ${selectedPeriod === '6months' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            className={`px-2 py-1 rounded ${selectedPeriod === '6months' ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
             onClick={() => setSelectedPeriod('6months')}
           >
             6M
           </button>
           <button 
-            className={`px-2 py-1 rounded ${selectedPeriod === '1year' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            className={`px-2 py-1 rounded ${selectedPeriod === '1year' ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white' : 'text-gray-500 hover:bg-gray-100'}`}
             onClick={() => setSelectedPeriod('1year')}
           >
             1A

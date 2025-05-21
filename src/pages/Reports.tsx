@@ -228,12 +228,12 @@ const Reports: React.FC = () => {
               categoryId: '',
               accountId: '',
             })}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 bg-white border border-gray-300 rounded-md"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2"
           >
             Limpar Filtros
           </button>
           
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2">
+          <button className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 flex items-center gap-2">
             <Download size={16} />
             Exportar
           </button>

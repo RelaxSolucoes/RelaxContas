@@ -97,7 +97,7 @@ const Calculator: React.FC = () => {
             onClick={() => setSelectedCalculator('investment')}
             className={`flex-1 px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
               selectedCalculator === 'investment' 
-                ? 'bg-blue-100 text-blue-700' 
+                ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -108,7 +108,7 @@ const Calculator: React.FC = () => {
             onClick={() => setSelectedCalculator('loan')}
             className={`flex-1 px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
               selectedCalculator === 'loan' 
-                ? 'bg-blue-100 text-blue-700' 
+                ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
