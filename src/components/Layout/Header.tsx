@@ -210,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
+                className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                   {userName.charAt(0).toUpperCase()}
