@@ -30,17 +30,17 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
         <Sidebar 
           isMobile={isMobile} 
           isOpen={sidebarOpen} 
           toggleSidebar={toggleSidebar} 
         />
         
-        <main className="flex-1 min-h-screen">
-          <div className="max-w-[1600px] mx-auto">
+        <main className="flex-1 min-h-screen w-full">
+          <div className="max-w-[1600px] mx-auto w-full">
             <Header onOpenAddTransactionModal={() => setIsAddTransactionModalOpen(true)} />
-            <div className="p-4">
+            <div className="p-2 sm:p-4">
               <Outlet />
             </div>
           </div>

@@ -13,8 +13,8 @@ const RecentTransactions: React.FC = () => {
     .slice(0, 5);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
         <h2 className="font-semibold text-gray-800">Transações Recentes</h2>
         <Link 
           to="/transactions" 
@@ -24,7 +24,7 @@ const RecentTransactions: React.FC = () => {
         </Link>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {sortedTransactions.length > 0 ? (
           sortedTransactions.map(transaction => {
             const category = categories.find(c => c.id === transaction.category_id);

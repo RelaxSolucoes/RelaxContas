@@ -5,6 +5,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Responsi
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 
+const isMobileWidth = (w: number) => w < 640;
+
 const Calculator: React.FC = () => {
   const [selectedCalculator, setSelectedCalculator] = useState<'investment' | 'loan'>('investment');
   
@@ -38,7 +40,8 @@ const Calculator: React.FC = () => {
   const [investmentPeriodUnit, setInvestmentPeriodUnit] = useState<'anos' | 'meses'>('anos');
   const [loanPeriodUnit, setLoanPeriodUnit] = useState<'anos' | 'meses'>('meses');
   
-  const { width, height } = useWindowSize();
+  const { width } = useWindowSize();
+  const isMobile = isMobileWidth(width);
   
   // Investment calculation
   const calculateInvestment = () => {
@@ -206,15 +209,15 @@ const Calculator: React.FC = () => {
   const investmentTableData = getInvestmentTableData();
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Calculadoras Financeiras</h1>
+    <div className="space-y-4 sm:space-y-6 px-1.5 sm:px-4 md:px-8">
+      <h1 className="text-lg sm:text-2xl font-bold text-gray-800 text-center">Calculadoras Financeiras</h1>
       
       {/* Calculator Type Selection */}
-      <div className="bg-white rounded-xl border border-gray-200 p-3">
-        <div className="flex gap-2">
+      <div className="bg-white rounded-xl border border-gray-200 p-1.5 sm:p-3">
+        <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
           <button 
             onClick={() => setSelectedCalculator('investment')}
-            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
+            className={`w-full sm:flex-1 px-3 sm:px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
               selectedCalculator === 'investment' 
                 ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -225,7 +228,7 @@ const Calculator: React.FC = () => {
           </button>
           <button 
             onClick={() => setSelectedCalculator('loan')}
-            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
+            className={`w-full sm:flex-1 px-3 sm:px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 ${
               selectedCalculator === 'loan' 
                 ? 'bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -238,15 +241,15 @@ const Calculator: React.FC = () => {
       </div>
       
       {/* Calculator Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Input Form */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-2.5 sm:p-6 w-full">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
             {selectedCalculator === 'investment' ? 'Calculadora de Investimentos' : 'Calculadora de Empréstimos'}
           </h2>
           
           {selectedCalculator === 'investment' ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
                 <label htmlFor="initialAmount" className="block text-sm font-medium text-gray-700 mb-1">
                   Valor Inicial
@@ -259,7 +262,7 @@ const Calculator: React.FC = () => {
                     name="initialAmount"
                     value={investmentData.displayInitialAmount}
                     onChange={handleInvestmentInputChange}
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                 </div>
               </div>
@@ -276,7 +279,7 @@ const Calculator: React.FC = () => {
                     name="monthlyContribution"
                     value={investmentData.displayMonthlyContribution}
                     onChange={handleInvestmentInputChange}
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                 </div>
               </div>
@@ -285,19 +288,19 @@ const Calculator: React.FC = () => {
                 <label htmlFor="interestRate" className="block text-sm font-medium text-gray-700 mb-1">
                   Taxa de Juros (%)
                 </label>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-col sm:flex-row">
                   <input
                     type="text"
                     id="interestRate"
                     name="interestRate"
                     value={investmentData.displayInterestRate}
                     onChange={handleInvestmentInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                   <select
                     value={investmentRateUnit}
                     onChange={(e) => setInvestmentRateUnit(e.target.value as 'ano' | 'mes')}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   >
                     <option value="ano">Ano</option>
                     <option value="mes">Mês</option>
@@ -309,19 +312,19 @@ const Calculator: React.FC = () => {
                 <label htmlFor="period" className="block text-sm font-medium text-gray-700 mb-1">
                   Período
                 </label>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-col sm:flex-row">
                   <input
                     type="text"
                     id="period"
                     name="period"
                     value={investmentData.displayPeriod}
                     onChange={handleInvestmentInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                   <select
                     value={investmentPeriodUnit}
                     onChange={(e) => setInvestmentPeriodUnit(e.target.value as 'anos' | 'meses')}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   >
                     <option value="anos">Anos</option>
                     <option value="meses">Meses</option>
@@ -330,7 +333,7 @@ const Calculator: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
                 <label htmlFor="loanAmount" className="block text-sm font-medium text-gray-700 mb-1">
                   Valor do Empréstimo
@@ -343,7 +346,7 @@ const Calculator: React.FC = () => {
                     name="loanAmount"
                     value={loanData.displayLoanAmount}
                     onChange={handleLoanInputChange}
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                 </div>
               </div>
@@ -352,19 +355,19 @@ const Calculator: React.FC = () => {
                 <label htmlFor="interestRate" className="block text-sm font-medium text-gray-700 mb-1">
                   Taxa de Juros (%)
                 </label>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-col sm:flex-row">
                   <input
                     type="text"
                     id="interestRate"
                     name="interestRate"
                     value={loanData.displayInterestRate}
                     onChange={handleLoanInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                   <select
                     value={loanRateUnit}
                     onChange={(e) => setLoanRateUnit(e.target.value as 'ano' | 'mes')}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   >
                     <option value="ano">Ano</option>
                     <option value="mes">Mês</option>
@@ -376,19 +379,19 @@ const Calculator: React.FC = () => {
                 <label htmlFor="period" className="block text-sm font-medium text-gray-700 mb-1">
                   Período
                 </label>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-col sm:flex-row">
                   <input
                     type="text"
                     id="period"
                     name="period"
                     value={loanData.displayPeriod}
                     onChange={handleLoanInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   />
                   <select
                     value={loanPeriodUnit}
                     onChange={(e) => setLoanPeriodUnit(e.target.value as 'anos' | 'meses')}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm sm:text-base"
                   >
                     <option value="anos">Anos</option>
                     <option value="meses">Meses</option>
@@ -397,32 +400,48 @@ const Calculator: React.FC = () => {
               </div>
             </div>
           )}
+          {/* Resultado destacado no mobile */}
+          {isMobile && selectedCalculator === 'investment' && investmentTableData.length > 1 && (
+            <div className="w-full flex justify-center my-3">
+              <div className="relative w-full">
+                <Confetti width={width} height={160} numberOfPieces={220} recycle={false} style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none' }} />
+                <div className="text-center w-full relative z-10">
+                  <span className="block text-base font-semibold text-gray-800 mb-1">
+                    No final de {investmentTableData[investmentTableData.length - 1].mes} meses você terá uma
+                  </span>
+                  <span className="block text-lg font-bold text-[#22c55e]">
+                    renda passiva de {investmentTableData[investmentTableData.length - 1].mes === 0 ? 'R$ 0,00' : `R$ ${investmentTableData[investmentTableData.length - 1].jurosMes.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Results */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Resultados</h2>
+        <div className="bg-white rounded-xl border border-gray-200 p-2.5 sm:p-6 w-full">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Resultados</h2>
           
           {selectedCalculator === 'investment' ? (
             <div className="space-y-6">
-              <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg text-center">
                 <p className="text-sm font-semibold mb-1 text-[#7c3aed]">Valor Final</p>
-                <p className="text-2xl font-bold text-[#7c3aed]">
+                <p className="text-xl sm:text-2xl font-bold text-[#7c3aed]">
                   {formatCurrency(investmentResults.futureValue)}
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg text-center">
                   <p className="text-sm font-semibold mb-1 text-[#2563eb]">Total Investido</p>
-                  <p className="text-2xl font-bold text-[#2563eb]">
+                  <p className="text-xl sm:text-2xl font-bold text-[#2563eb]">
                     {formatCurrency(investmentResults.totalInvested)}
                   </p>
                 </div>
                 
-                <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg">
+                <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg text-center">
                   <p className="text-sm font-semibold mb-1 text-[#22c55e]">Juros Ganhos</p>
-                  <p className="text-2xl font-bold text-[#22c55e]">
+                  <p className="text-xl sm:text-2xl font-bold text-[#22c55e]">
                     {formatCurrency(investmentResults.interestEarned)}
                   </p>
                 </div>
@@ -445,24 +464,24 @@ const Calculator: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg text-center">
                 <p className="text-sm text-blue-700 font-medium">Parcela Mensal</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-xl sm:text-2xl font-bold text-blue-600">
                   {formatCurrency(loanResults.monthlyPayment)}
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-center">
                   <p className="text-sm text-red-700 font-medium">Total a Pagar</p>
-                  <p className="text-xl font-bold text-red-600">
+                  <p className="text-lg sm:text-xl font-bold text-red-600">
                     {formatCurrency(loanResults.totalPayment)}
                   </p>
                 </div>
                 
-                <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg">
+                <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg text-center">
                   <p className="text-sm text-purple-700 font-medium">Total de Juros</p>
-                  <p className="text-xl font-bold text-purple-600">
+                  <p className="text-lg sm:text-xl font-bold text-purple-600">
                     {formatCurrency(loanResults.totalInterest)}
                   </p>
                 </div>
@@ -487,10 +506,10 @@ const Calculator: React.FC = () => {
         </div>
       </div>
 
-      {/* Destaque de renda passiva com confete */}
-      {selectedCalculator === 'investment' && investmentTableData.length > 1 && (
-        <div className="w-full flex justify-center my-8">
-          <div className="relative w-full">
+      {/* Destaque de renda passiva com confete no desktop */}
+      {!isMobile && selectedCalculator === 'investment' && investmentTableData.length > 1 && (
+        <div className="w-full flex justify-center my-6 sm:my-8">
+          <div className="relative w-full max-w-2xl">
             <Confetti width={width} height={200} numberOfPieces={300} recycle={false} style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none' }} />
             <div className="text-center w-full relative z-10">
               <span className="block text-xl md:text-2xl font-semibold text-gray-800 mb-1">
@@ -505,88 +524,90 @@ const Calculator: React.FC = () => {
       )}
 
       {selectedCalculator === 'investment' && investmentChartData.length > 1 && (
-        <div className="mt-8 bg-white rounded-xl border border-gray-200 p-6 w-full">
-          <h3 className="text-lg font-semibold mb-4">Gráfico de Evolução</h3>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={investmentChartData} margin={{ top: 20, right: 40, left: 0, bottom: 40 }}>
-              <CartesianGrid stroke="#e5e7eb" strokeDasharray="4 4" vertical={false} />
-              <XAxis
-                dataKey="periodo"
-                tick={{ fontSize: 14, fill: '#64748b' }}
-                label={{
-                  value: 'Mês',
-                  position: 'insideBottomRight',
-                  offset: -10,
-                  fontSize: 16,
-                  fill: '#334155'
-                }}
-              />
-              <YAxis
-                tick={{ fontSize: 14, fill: '#64748b' }}
-                tickFormatter={v => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-              />
-              <Tooltip
-                contentStyle={{ borderRadius: 12, borderColor: '#e5e7eb', fontSize: 15 }}
-                formatter={(value, name) => [
-                  `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                  name === 'total' ? 'Juros Ganhos' : 'Valor Investido'
-                ]}
-                labelFormatter={label => `Mês: ${label}`}
-              />
-              <Legend
-                verticalAlign="top"
-                align="center"
-                iconType="plainline"
-                wrapperStyle={{ fontSize: 16, marginBottom: 12 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="#22c55e"
-                name="Juros Ganhos"
-                strokeWidth={3}
-                dot={false}
-                activeDot={{ r: 6, fill: '#22c55e', stroke: '#fff', strokeWidth: 2 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="investido"
-                stroke="#2563eb"
-                name="Valor Investido"
-                strokeWidth={3}
-                dot={false}
-                activeDot={{ r: 6, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="mt-6 sm:mt-8 bg-white rounded-xl border border-gray-200 p-2 sm:p-6 w-full overflow-x-auto">
+          <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Gráfico de Evolução</h3>
+          <div className="w-full min-w-[320px]" style={{ minWidth: 0 }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={investmentChartData} margin={{ top: 20, right: 24, left: 24, bottom: 40 }}>
+                <CartesianGrid stroke="#e5e7eb" strokeDasharray="4 4" vertical={false} />
+                <XAxis
+                  dataKey="periodo"
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  label={{
+                    value: 'Mês',
+                    position: 'insideBottomRight',
+                    offset: -10,
+                    fontSize: 14,
+                    fill: '#334155'
+                  }}
+                />
+                <YAxis
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tickFormatter={v => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, borderColor: '#e5e7eb', fontSize: 13 }}
+                  formatter={(value, name) => [
+                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                    name === 'total' ? 'Juros Ganhos' : 'Valor Investido'
+                  ]}
+                  labelFormatter={label => `Mês: ${label}`}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  align="center"
+                  iconType="plainline"
+                  wrapperStyle={{ fontSize: 14, marginTop: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  stroke="#22c55e"
+                  name="Juros Ganhos"
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={{ r: 6, fill: '#22c55e', stroke: '#fff', strokeWidth: 2 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="investido"
+                  stroke="#2563eb"
+                  name="Valor Investido"
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={{ r: 6, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
 
       {selectedCalculator === 'investment' && investmentTableData.length > 1 && (
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-4">Tabela Detalhada</h3>
-          <div className="overflow-x-auto">
+        <div className="mt-6 sm:mt-8">
+          <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Tabela Detalhada</h3>
+          <div className="overflow-x-auto w-full">
             <table
-              className="min-w-full w-full text-sm border rounded-xl overflow-hidden bg-white"
+              className="min-w-[320px] sm:min-w-[600px] w-full text-xs sm:text-sm border rounded-xl overflow-hidden bg-white"
               style={{ display: 'block' }}
             >
               <thead style={{ display: 'table', width: '100%', tableLayout: 'fixed' }}>
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Mês</th>
-                  <th className="px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Juros do mês</th>
-                  <th className="px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Investido</th>
-                  <th className="px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Juros</th>
-                  <th className="px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Acumulado</th>
+                  <th className="px-2 sm:px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Mês</th>
+                  <th className="px-2 sm:px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Juros do mês</th>
+                  <th className="px-2 sm:px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Investido</th>
+                  <th className="px-2 sm:px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Juros</th>
+                  <th className="px-2 sm:px-4 py-2 text-left font-semibold text-gray-700 sticky top-0 z-10 bg-gray-50">Total Acumulado</th>
                 </tr>
               </thead>
               <tbody style={{ display: 'block', width: '100%', maxHeight: 350, overflowY: 'auto' }}>
                 {investmentTableData.map((row, idx) => (
                   <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} style={{ display: 'table', width: '100%', tableLayout: 'fixed' }}>
-                    <td className="px-4 py-2">{row.mes}</td>
-                    <td className="px-4 py-2">{row.mes === 0 ? '-' : `R$ ${row.jurosMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</td>
-                    <td className="px-4 py-2">R$ {row.investido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td className="px-4 py-2">R$ {row.totalJuros.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td className="px-4 py-2 font-semibold">R$ {row.total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="px-2 sm:px-4 py-2">{row.mes}</td>
+                    <td className="px-2 sm:px-4 py-2">{row.mes === 0 ? '-' : `R$ ${row.jurosMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</td>
+                    <td className="px-2 sm:px-4 py-2">R$ {row.investido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="px-2 sm:px-4 py-2">R$ {row.totalJuros.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="px-2 sm:px-4 py-2 font-semibold">R$ {row.total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -596,20 +617,20 @@ const Calculator: React.FC = () => {
       )}
 
       {selectedCalculator === 'investment' && investmentTableData.length > 1 && (
-        <div className="mt-10 max-w-3xl mx-auto space-y-6 text-gray-800">
-          <h2 className="text-lg font-semibold mt-6">Passo a passo para usar a calculadora de juros compostos</h2>
-          <ol className="list-decimal list-inside space-y-2">
+        <div className="mt-10 max-w-3xl mx-auto space-y-6 text-gray-800 px-2 sm:px-0">
+          <h2 className="text-base sm:text-lg font-semibold mt-6">Passo a passo para usar a calculadora de juros compostos</h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm sm:text-base">
             <li>Preencha o campo <b>"valor inicial"</b> com a quantia que você irá investir inicialmente.</li>
             <li>No campo <b>"aporte mensal"</b>, coloque o quanto pretende investir por mês.</li>
             <li>Informe a <b>taxa de juros</b> mensal ou anual do investimento.</li>
             <li>Preencha o campo <b>"período"</b> com o tempo que pretende investir.</li>
             <li>O resultado será exibido automaticamente conforme você preenche os campos.</li>
           </ol>
-          <p>
+          <p className="text-sm sm:text-base">
             Abaixo, você pode visualizar um gráfico detalhado de como seu dinheiro pode render ao longo do tempo, além de uma tabela mês a mês com todos os valores calculados automaticamente.
           </p>
-          <h3 className="text-lg font-semibold mt-6">Como funciona o cálculo de juros compostos?</h3>
-          <p>
+          <h3 className="text-base sm:text-lg font-semibold mt-6">Como funciona o cálculo de juros compostos?</h3>
+          <p className="text-sm sm:text-base">
             A fórmula dos juros compostos é: <b>M = C (1+i)<sup>t</sup></b><br />
             Onde:<br />
             <b>M</b> = montante final<br />
@@ -617,26 +638,26 @@ const Calculator: React.FC = () => {
             <b>i</b> = taxa de juros (em decimal)<br />
             <b>t</b> = tempo do investimento
           </p>
-          <p>
+          <p className="text-sm sm:text-base">
             Lembre-se: se usar taxa mensal, o tempo deve estar em meses. Se usar taxa anual, o tempo deve estar em anos.
           </p>
-          <h3 className="text-lg font-semibold mt-6">Onde os juros compostos são aplicados?</h3>
-          <ul className="list-disc list-inside space-y-1">
+          <h3 className="text-base sm:text-lg font-semibold mt-6">Onde os juros compostos são aplicados?</h3>
+          <ul className="list-disc list-inside space-y-1 text-sm sm:text-base">
             <li>Investimentos de renda fixa (CDBs, Tesouro Direto, etc.)</li>
             <li>Empréstimos e financiamentos</li>
             <li>Parcelamentos e contas em atraso</li>
             <li>Reinvestimento de dividendos em ações</li>
           </ul>
-          <h3 className="text-lg font-semibold mt-6">Diferença entre juros simples e compostos</h3>
-          <p>
+          <h3 className="text-base sm:text-lg font-semibold mt-6">Diferença entre juros simples e compostos</h3>
+          <p className="text-sm sm:text-base">
             <b>Juros simples:</b> calculados apenas sobre o valor inicial.<br />
             <b>Juros compostos:</b> calculados sobre o valor inicial + juros acumulados (juros sobre juros).
           </p>
-          <p>
+          <p className="text-sm sm:text-base">
             No longo prazo, os juros compostos fazem uma enorme diferença no crescimento do seu patrimônio!
           </p>
           <div className="mt-8 flex flex-col items-center">
-            <span className="block text-2xl md:text-3xl font-bold mb-4 text-gray-800 text-center">Quer aprender a investir com quem realmente entende do assunto?</span>
+            <span className="block text-lg sm:text-2xl md:text-3xl font-bold mb-4 text-gray-800 text-center">Quer aprender a investir com quem realmente entende do assunto?</span>
             <a
               href="https://form.auvp.com.br/to/EtiSlsEr?indicacao=rony.campinas@hotmail.com"
               target="_blank"

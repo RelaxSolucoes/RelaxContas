@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { formatCurrency, formatDate } from '../utils/helpers';
-import { Filter, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import TransactionModal from '../components/Transactions/TransactionModal';
 import { Transaction, Category, Account } from '../types';
 import * as XLSX from 'xlsx';
@@ -225,10 +225,10 @@ const Transactions: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
         <h1 className="text-2xl font-bold text-gray-800">Transações</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 flex items-center gap-2" onClick={handleExport}>
             <Download size={16} />
             <span>Exportar</span>
@@ -238,7 +238,7 @@ const Transactions: React.FC = () => {
               setEditingTransaction(undefined);
               setIsModalOpen(true);
             }}
-            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 flex items-center gap-2"
           >
             Nova Transação
           </button>
@@ -252,26 +252,24 @@ const Transactions: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-blue-700 font-medium">Saldo do Período</p>
-          <p className={`text-2xl font-bold ${totals.income - totals.expense >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-            {formatCurrency(totals.income - totals.expense)}
-          </p>
+          <p className={`text-2xl font-bold ${totals.income - totals.expense >= 0 ? 'text-blue-600' : 'text-red-600'}`}>{formatCurrency(totals.income - totals.expense)}</p>
         </div>
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-green-700 font-medium">Total de Receitas</p>
           <p className="text-2xl font-bold text-green-600">{formatCurrency(totals.income)}</p>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-red-700 font-medium">Total de Despesas</p>
           <p className="text-2xl font-bold text-red-600">{formatCurrency(totals.expense)}</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex flex-wrap gap-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
           <div className="flex-1 min-w-[200px]">
             <input
               type="text"
@@ -361,9 +359,9 @@ const Transactions: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+          <div className="min-w-[600px]">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
               <thead className="bg-gray-50">
                 <tr>
                   <th 
@@ -414,10 +412,10 @@ const Transactions: React.FC = () => {
                       key={transaction.id}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(transaction.date)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {transaction.type === 'income' ? (
                             <ArrowUpRight size={16} className="text-green-500 mr-2" />
@@ -429,7 +427,7 @@ const Transactions: React.FC = () => {
                               {transaction.description}
                             </div>
                             {transaction.tags && transaction.tags.length > 0 && (
-                              <div className="flex gap-1 mt-1">
+                              <div className="flex flex-wrap gap-1 mt-1">
                                 {transaction.tags.map(tag => (
                                   <span 
                                     key={tag}
@@ -443,7 +441,7 @@ const Transactions: React.FC = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div 
                             className="w-2 h-2 rounded-full mr-2"
@@ -452,20 +450,20 @@ const Transactions: React.FC = () => {
                           <span className="text-sm text-gray-900">{category?.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                         {account?.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
                         <span className={`text-sm font-medium ${
                           transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                         }`}>
                           {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium flex flex-col sm:flex-row gap-2 sm:gap-0 justify-end items-end sm:items-center">
                         <button
                           onClick={() => handleEditTransaction(transaction)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-blue-600 hover:text-blue-900 mr-0 sm:mr-3"
                         >
                           Editar
                         </button>

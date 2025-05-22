@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Plus, Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Settings as SettingsIcon, Plus, Edit, Trash2 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { Category, Subcategory } from '../types';
 
@@ -213,9 +213,9 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, category
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose}></div>
       
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-auto">
-          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <div className="p-3 sm:p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800">
               {category ? 'Editar Categoria' : 'Nova Categoria'}
             </h2>
@@ -224,7 +224,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, category
             </button>
           </div>
           
-          <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
             {errors.submit && (
               <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg">
                 {errors.submit}
@@ -470,23 +470,23 @@ const Settings: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex justify-between items-center mb-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 sm:mb-4 gap-2 sm:gap-0">
           <div className="flex items-center gap-2">
             <SettingsIcon size={20} className="text-gray-500" />
             <h2 className="text-lg font-semibold text-gray-800">Gerenciar Categorias</h2>
           </div>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2 text-sm sm:text-base"
           >
             <Plus size={16} />
             Nova Categoria
           </button>
         </div>
         
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Receitas</h3>
               <div className="space-y-2">
@@ -501,15 +501,15 @@ const Settings: React.FC = () => {
                   .map(category => (
                     <div 
                       key={category.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 gap-2 xs:gap-0"
                     >
                       <div className="flex items-center">
                         <div 
-                          className="w-4 h-4 rounded-full mr-3"
+                          className="w-4 h-4 rounded-full mr-2 sm:mr-3"
                           style={{ backgroundColor: category.color }}
                         ></div>
                         <div>
-                          <p className="font-medium">{category.name}</p>
+                          <p className="font-medium text-sm sm:text-base">{category.name}</p>
                           {category.subcategories && category.subcategories.length > 0 && (
                             <p className="text-xs text-gray-500">
                               {category.subcategories.length} subcategorias
@@ -517,7 +517,7 @@ const Settings: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => handleOpenModal(category)}
                           className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-white"
@@ -550,15 +550,15 @@ const Settings: React.FC = () => {
                   .map(category => (
                     <div 
                       key={category.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 gap-2 xs:gap-0"
                     >
                       <div className="flex items-center">
                         <div 
-                          className="w-4 h-4 rounded-full mr-3"
+                          className="w-4 h-4 rounded-full mr-2 sm:mr-3"
                           style={{ backgroundColor: category.color }}
                         ></div>
                         <div>
-                          <p className="font-medium">{category.name}</p>
+                          <p className="font-medium text-sm sm:text-base">{category.name}</p>
                           {category.subcategories && category.subcategories.length > 0 && (
                             <p className="text-xs text-gray-500">
                               {category.subcategories.length} subcategorias
@@ -566,7 +566,7 @@ const Settings: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => handleOpenModal(category)}
                           className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-white"

@@ -173,9 +173,9 @@ const Reports: React.FC = () => {
       </div>
 
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
         {/* Receitas */}
-        <div className="flex items-center gap-4 bg-green-50 border border-green-200 rounded-xl shadow p-4">
+        <div className="flex items-center gap-3 sm:gap-4 bg-green-50 border border-green-200 rounded-xl shadow p-3 sm:p-4">
           <div className="bg-green-100 text-green-600 rounded-full p-2">
             <ArrowUpRight size={28} />
           </div>
@@ -185,7 +185,7 @@ const Reports: React.FC = () => {
           </div>
         </div>
         {/* Despesas */}
-        <div className="flex items-center gap-4 bg-red-50 border border-red-200 rounded-xl shadow p-4">
+        <div className="flex items-center gap-3 sm:gap-4 bg-red-50 border border-red-200 rounded-xl shadow p-3 sm:p-4">
           <div className="bg-red-100 text-red-600 rounded-full p-2">
             <ArrowDownRight size={28} />
           </div>
@@ -195,7 +195,7 @@ const Reports: React.FC = () => {
           </div>
         </div>
         {/* Saldo */}
-        <div className="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl shadow p-4">
+        <div className="flex items-center gap-3 sm:gap-4 bg-blue-50 border border-blue-200 rounded-xl shadow p-3 sm:p-4">
           <div className="bg-blue-100 text-blue-600 rounded-full p-2">
             <PieChart size={28} />
           </div>
@@ -207,8 +207,8 @@ const Reports: React.FC = () => {
       </div>
 
       {/* Filtros */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 mt-2 shadow-sm">
-        <div className="flex flex-wrap gap-2 items-center w-full">
+      <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 mt-2 shadow-sm">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 items-stretch sm:items-center w-full">
           {/* Date Range Filter */}
           <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden h-11">
             <div className="px-3 py-2 bg-gray-100 border-r border-gray-200 flex items-center h-full">
@@ -265,7 +265,7 @@ const Reports: React.FC = () => {
             </>
           )}
         </div>
-        <div className="flex gap-2 w-full justify-end mt-4">
+        <div className="flex gap-2 w-full justify-end mt-2 sm:mt-4 flex-col sm:flex-row">
           <button
             onClick={() => setFilters({
               type: 'all',
@@ -291,8 +291,8 @@ const Reports: React.FC = () => {
       )}
 
       {/* Report Types */}
-      <div className="bg-white rounded-xl border border-gray-200 p-3">
-        <div className="flex flex-wrap gap-2">
+      <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 items-center justify-center">
           <button 
             onClick={() => setSelectedReport('expense-categories')}
             className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${
@@ -341,8 +341,8 @@ const Reports: React.FC = () => {
       </div>
 
       {/* Report Content */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex justify-between items-center mb-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
           <h2 className="text-lg font-semibold text-gray-800">
             {selectedReport === 'expense-categories' && 'Despesas por Categoria'}
             {selectedReport === 'income-categories' && 'Receitas por Categoria'}
@@ -353,7 +353,7 @@ const Reports: React.FC = () => {
         </div>
         
         {selectedReport === 'expense-categories' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-center">
             {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
               {data.categories.length === 0 ? (
@@ -442,7 +442,7 @@ const Reports: React.FC = () => {
         )}
         
         {selectedReport === 'income-categories' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-center">
             {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
               {data.categories.length === 0 ? (

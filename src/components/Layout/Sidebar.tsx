@@ -73,8 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
   const sidebarClasses = `bg-[#f4f8ff] border-r border-[#dbeafe] transition-all duration-300 z-20 shadow-none
     ${isMobile
       ? isOpen
-        ? 'fixed inset-y-0 left-0 w-64'
-        : 'fixed inset-y-0 -left-64 w-64'
+        ? 'fixed inset-y-0 left-0 w-4/5 max-w-xs'
+        : 'fixed inset-y-0 -left-full w-4/5 max-w-xs'
       : 'sticky top-0 h-screen w-64'}
   `;
 
@@ -96,11 +96,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
 
       <aside className={sidebarClasses + ' flex flex-col min-h-screen'}>
         <div className="flex flex-col h-full">
-          <div className="p-6 flex items-center gap-2 border-b border-[#dbeafe]">
+          <div className="p-4 sm:p-6 flex items-center gap-2 border-b border-[#dbeafe]">
             <div className="bg-blue-100 rounded-xl p-2">
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#bfdbfe"/></svg>
             </div>
-            <h1 className="text-2xl font-extrabold text-[#1e3a8a] tracking-tight">Relax Contas</h1>
+            <h1 className="text-lg sm:text-2xl font-extrabold text-[#1e3a8a] tracking-tight">Relax Contas</h1>
             {isMobile && (
               <button 
                 onClick={toggleSidebar}
@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
               </button>
             )}
           </div>
-          <nav className="flex-1 overflow-y-auto px-2 py-6">
+          <nav className="flex-1 overflow-y-auto px-2 py-4 sm:py-6">
             <ul className="space-y-2">
               {menuItems.map((item) => (
                 <li key={item.path}>
@@ -130,8 +130,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
               ))}
             </ul>
           </nav>
-          <div className="px-6 pb-6 mt-auto">
-            <div className="bg-white border border-[#dbeafe] rounded-2xl p-4 flex flex-col items-center shadow-sm">
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6 mt-auto">
+            <div className="bg-white border border-[#dbeafe] rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm">
               <p className="text-xs font-semibold text-[#60a5fa] mb-1">Saldo Total</p>
               <p className="text-xl font-bold text-[#1e3a8a] mb-3">
                 {loading ? 'Carregando...' : error ? error : formatCurrency(totalBalance || 0)}
@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
       {isMobile && !isOpen && (
         <button
           onClick={toggleSidebar}
-          className="fixed bottom-4 right-4 bg-blue-700 text-white p-3 rounded-full shadow-lg z-10"
+          className="fixed bottom-4 right-4 bg-blue-700 text-white p-3 rounded-full shadow-lg z-30"
         >
           <Menu size={24} />
         </button>

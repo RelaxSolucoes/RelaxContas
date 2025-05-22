@@ -175,9 +175,9 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose}></div>
       
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-auto">
-          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <div className="p-3 sm:p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800">
               {account ? 'Editar Conta' : 'Nova Conta'}
             </h2>
@@ -186,7 +186,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
             </button>
           </div>
           
-          <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
             {errors.submit && (
               <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg">
                 {errors.submit}
@@ -545,11 +545,11 @@ const Accounts: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
         <h1 className="text-2xl font-bold text-gray-800">Contas</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition"
+          className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2 text-sm sm:text-base"
         >
           <Plus size={16} />
           Nova Conta
@@ -563,22 +563,22 @@ const Accounts: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-blue-700 font-medium">Saldo Total</p>
           <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalBalance)}</p>
           <p className="text-xs text-blue-600 mt-1">
             Total em contas ativas (exceto cartões de crédito)
           </p>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-red-700 font-medium">Total em Faturas</p>
           <p className="text-2xl font-bold text-red-600">{formatCurrency(creditCardTotal)}</p>
           <p className="text-xs text-red-600 mt-1">
             Total de faturas em aberto
           </p>
         </div>
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+        <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-purple-700 font-medium">Limite Disponível</p>
           <p className="text-2xl font-bold text-purple-600">
             {formatCurrency(creditCardLimit - creditCardTotal)}
@@ -592,7 +592,7 @@ const Accounts: React.FC = () => {
       </div>
 
       {/* Accounts List */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <h2 className="text-lg font-semibold text-gray-800">Suas Contas</h2>
         
         {accounts.length === 0 ? (
@@ -608,16 +608,16 @@ const Accounts: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
             {accounts.map(account => (
               <div 
                 key={account.id} 
-                className={`${account.isactive ? 'bg-white' : 'bg-gray-50'} rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow`}
+                className={`${account.isactive ? 'bg-white' : 'bg-gray-50'} rounded-xl border border-gray-200 p-3 sm:p-4 hover:shadow-md transition-shadow`}
               >
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-2 sm:mb-3 gap-2 xs:gap-0">
                   <div className="flex items-center">
                     <div 
-                      className="mr-3 p-2 rounded-full"
+                      className="mr-2 sm:mr-3 p-2 rounded-full"
                       style={{ backgroundColor: `${account.color}20` }}
                     >
                       <div className="text-current" style={{ color: account.color }}>
@@ -625,11 +625,11 @@ const Accounts: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800">{account.name}</h3>
+                      <h3 className="font-medium text-gray-800 text-sm sm:text-base">{account.name}</h3>
                       <p className="text-xs text-gray-500">{getAccountTypeLabel(account.type)}</p>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <button
                       onClick={() => handleOpenModal(account)}
                       className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100"

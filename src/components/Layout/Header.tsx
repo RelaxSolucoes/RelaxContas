@@ -104,16 +104,16 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
   };
   
   return (
-    <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
-      <div className="px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-10 bg-white border-b border-gray-200 w-full">
+      <div className="px-2 sm:px-4 py-2 sm:py-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div>
-              <div className="flex items-end gap-4">
+              <div className="flex items-end gap-2 sm:gap-4">
                 <div className="flex flex-col items-start">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl sm:text-2xl" style={{ lineHeight: 1 }}>{getGreeting().emoji}</span>
-                    <span className="text-2xl sm:text-2xl font-extrabold text-gray-800 tracking-tight">{getGreeting().text}, {firstName}</span>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <span className="text-lg sm:text-2xl" style={{ lineHeight: 1 }}>{getGreeting().emoji}</span>
+                    <span className="text-lg sm:text-2xl font-extrabold text-gray-800 tracking-tight">{getGreeting().text}, {firstName}</span>
                   </div>
                   <div className="text-xs text-gray-500 font-medium mt-0.5 ml-[2.2rem] sm:ml-[2.6rem]">
                     {todayStr}
@@ -122,15 +122,17 @@ const Header: React.FC<HeaderProps> = ({ onOpenAddTransactionModal }) => {
               </div>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onOpenAddTransactionModal}
-              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold flex items-center gap-2 hover:from-blue-500 hover:to-blue-800 transition"
-            >
-              <Plus size={16} />
-              <span className="hidden sm:inline">Nova Transação</span>
-            </button>
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
+            <div className="group relative">
+              <button
+                onClick={onOpenAddTransactionModal}
+                className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold flex items-center gap-2 hover:from-blue-500 hover:to-blue-800 transition text-base"
+                aria-label="Nova Transação"
+              >
+                <Plus size={20} />
+                Nova Transação
+              </button>
+            </div>
             
             <div className="relative" ref={notificationsRef}>
               <button

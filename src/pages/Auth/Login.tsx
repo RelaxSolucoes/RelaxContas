@@ -40,16 +40,16 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
       {/* Painel visual à esquerda */}
-      <div className="hidden md:flex md:w-1/2 bg-blue-700 text-white flex-col justify-center items-center p-10 relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-blue-700 text-white flex-col justify-center items-center p-6 lg:p-10 relative overflow-hidden">
         <div className="z-10">
-          <div className="flex items-center mb-8">
-            <span className="text-2xl font-bold tracking-tight">Relax Contas</span>
+          <div className="flex items-center mb-6 lg:mb-8">
+            <span className="text-xl lg:text-2xl font-bold tracking-tight">Relax Contas</span>
           </div>
-          <div className="mb-8">
-            <h2 className="text-3xl font-extrabold mb-2">Rápido, fácil e seguro</h2>
-            <p className="text-lg opacity-90">Gerencie suas contas, pagamentos e recebimentos em um só lugar. Simples, moderno e eficiente.</p>
+          <div className="mb-6 lg:mb-8">
+            <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Rápido, fácil e seguro</h2>
+            <p className="text-base lg:text-lg opacity-90">Gerencie suas contas, pagamentos e recebimentos em um só lugar. Simples, moderno e eficiente.</p>
           </div>
-          <div className="bg-white bg-opacity-10 rounded-xl p-6 shadow-lg flex flex-col gap-4">
+          <div className="bg-white bg-opacity-10 rounded-xl p-4 lg:p-6 shadow-lg flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <div className="bg-green-400 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">✓</div>
               <div>
@@ -66,10 +66,10 @@ const Login: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 right-0 opacity-20 w-64 h-64 bg-white rounded-full blur-3xl z-0" />
+        <div className="absolute bottom-0 right-0 opacity-20 w-40 h-40 lg:w-64 lg:h-64 bg-white rounded-full blur-3xl z-0" />
       </div>
       {/* Formulário à direita */}
-      <div className="flex flex-1 items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="flex flex-1 items-center justify-center py-8 px-2 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900">Entrar na sua conta</h2>

@@ -20,7 +20,7 @@ const QuickStatsCards: React.FC<QuickStatsCardsProps> = ({
   activeGoals,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
       <div className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow p-6 flex flex-col min-w-[140px] min-h-[120px] justify-between">
         <div className="flex items-center gap-2 mb-3">
           <ListChecks size={24} />

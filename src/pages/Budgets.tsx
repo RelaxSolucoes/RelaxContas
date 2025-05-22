@@ -176,9 +176,9 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose}></div>
       
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-auto">
-          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <div className="p-3 sm:p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800">
               {budget ? 'Editar Orçamento' : 'Novo Orçamento'}
             </h2>
@@ -187,7 +187,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
             </button>
           </div>
           
-          <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
             {errors.submit && (
               <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg">
                 {errors.submit}
@@ -376,38 +376,45 @@ const Budgets: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Orçamentos</h1>
-        <div className="flex items-center gap-2">
-          <div className="flex border border-gray-300 rounded-md overflow-hidden">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+          <h2 className="text-lg font-semibold text-gray-800">Seus Orçamentos</h2>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+          <h1 className="text-2xl font-bold text-gray-800">Orçamentos</h1>
+          <div className="flex flex-row flex-wrap gap-2 items-center w-full sm:w-auto">
+            <div className="flex border border-gray-300 rounded-md overflow-hidden">
+              <button
+                onClick={() => setView('cards')}
+                className={`px-3 py-1.5 text-sm ${
+                  view === 'cards' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+                style={{ minWidth: 70 }}
+              >
+                Cards
+              </button>
+              <button
+                onClick={() => setView('table')}
+                className={`px-3 py-1.5 text-sm ${
+                  view === 'table' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+                style={{ minWidth: 70 }}
+              >
+                Tabela
+              </button>
+            </div>
             <button
-              onClick={() => setView('cards')}
-              className={`px-3 py-1.5 text-sm ${
-                view === 'cards' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
+              onClick={() => handleOpenModal()}
+              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-3 sm:px-4 py-2 text-sm sm:text-base flex items-center gap-2"
             >
-              Cards
-            </button>
-            <button
-              onClick={() => setView('table')}
-              className={`px-3 py-1.5 text-sm ${
-                view === 'table' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Tabela
+              <Plus size={16} />
+              Novo Orçamento
             </button>
           </div>
-          <button
-            onClick={() => handleOpenModal()}
-            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
-          >
-            <Plus size={16} />
-            Novo Orçamento
-          </button>
         </div>
       </div>
 
@@ -418,20 +425,17 @@ const Budgets: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-blue-700 font-medium">Total Orçado (Mensal)</p>
           <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalBudgeted)}</p>
         </div>
       </div>
 
       {/* Budgets List */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
           <h2 className="text-lg font-semibold text-gray-800">Seus Orçamentos</h2>
-          <button className="text-blue-600 flex items-center text-sm">
-            <Settings size={16} className="mr-1" /> Configurações
-          </button>
         </div>
         
         {budgets.length === 0 ? (
@@ -447,23 +451,23 @@ const Budgets: React.FC = () => {
             </button>
           </div>
         ) : view === 'cards' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
             {budgets.map(budget => {
               const category = categories.find((c) => c.id === budget.category_id);
               
               return (
                 <div 
                   key={budget.id}
-                  className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                  className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-2 sm:mb-3 gap-2 xs:gap-0">
                     <div>
-                      <h3 className="font-medium text-gray-800">{category?.name}</h3>
+                      <h3 className="font-medium text-gray-800 text-sm sm:text-base">{category?.name}</h3>
                       <p className="text-xs text-gray-500">
                         {budget.period === 'monthly' ? 'Mensal' : 'Anual'}
                       </p>
                     </div>
-                    <div className="flex space-x-1">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => handleOpenModal(budget)}
                         className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100"
@@ -478,7 +482,6 @@ const Budgets: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
                   <div className="text-xl font-bold text-gray-800">
                     {formatCurrency(budget.amount)}
                   </div>
@@ -487,21 +490,21 @@ const Budgets: React.FC = () => {
             })}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+          <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+            <div className="min-w-[400px]">
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Categoria
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Período
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Valor
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Ações
                     </th>
                   </tr>
@@ -512,7 +515,7 @@ const Budgets: React.FC = () => {
                     
                     return (
                       <tr key={budget.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div 
                               className="w-2 h-2 rounded-full mr-2"
@@ -521,16 +524,16 @@ const Budgets: React.FC = () => {
                             <span className="text-sm text-gray-900">{category?.name}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                           {budget.period === 'monthly' ? 'Mensal' : 'Anual'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                           {formatCurrency(budget.amount)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium flex flex-col sm:flex-row gap-2 sm:gap-0 justify-end items-end sm:items-center">
                           <button
                             onClick={() => handleOpenModal(budget)}
-                            className="text-blue-600 hover:text-blue-900 mr-3"
+                            className="text-blue-600 hover:text-blue-900 mr-0 sm:mr-3"
                           >
                             Editar
                           </button>
