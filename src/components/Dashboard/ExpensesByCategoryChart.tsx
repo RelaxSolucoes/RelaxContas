@@ -51,9 +51,9 @@ const ExpensesByCategoryChart: React.FC = () => {
     <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
       <h2 className="text-xl font-bold mb-6 text-gray-800">Despesas por Categoria</h2>
       {expenseCategories.length === 0 ? (
-        <div className="flex flex-col items-center justify-center w-full py-12">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center w-full py-12">
           <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-          <p className="text-gray-500 text-lg font-medium">Nenhuma categoria de despesa cadastrada</p>
+          <p className="text-gray-500 dark:text-white text-lg font-medium">Nenhuma categoria de despesa cadastrada</p>
           <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para visualizar este gráfico.</p>
         </div>
       ) : (

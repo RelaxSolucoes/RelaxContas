@@ -132,10 +132,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
           </nav>
           <div className="px-4 sm:px-6 pb-4 sm:pb-6 mt-auto">
             <div className="bg-white dark:bg-gray-900 border border-[#dbeafe] dark:border-gray-800 rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm">
-              <p className="text-xs font-semibold text-[#60a5fa] dark:text-blue-300 mb-1">Saldo Total</p>
-              <p className="text-xl font-bold text-[#1e3a8a] dark:text-gray-100 mb-3">
-                {loading ? 'Carregando...' : error ? error : formatCurrency(totalBalance || 0)}
-              </p>
               <div className="w-full flex justify-end mb-1">
                 <span className="inline-block bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-blue-300 text-[11px] font-semibold px-2 py-0.5 rounded-full">Em breve</span>
               </div>
