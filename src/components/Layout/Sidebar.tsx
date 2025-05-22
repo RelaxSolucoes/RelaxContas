@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
     fetchBalance();
   }, []);
 
-  const sidebarClasses = `bg-[#f4f8ff] border-r border-[#dbeafe] transition-all duration-300 z-20 shadow-none
+  const sidebarClasses = `bg-[#f4f8ff] dark:bg-gray-900 border-r border-[#dbeafe] dark:border-gray-800 transition-all duration-300 z-20 shadow-none
     ${isMobile
       ? isOpen
         ? 'fixed inset-y-0 left-0 w-4/5 max-w-xs'
@@ -96,11 +96,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
 
       <aside className={sidebarClasses + ' flex flex-col min-h-screen'}>
         <div className="flex flex-col h-full">
-          <div className="p-4 sm:p-6 flex items-center gap-2 border-b border-[#dbeafe]">
-            <div className="bg-blue-100 rounded-xl p-2">
+          <div className="p-4 sm:p-6 flex items-center gap-2 border-b border-[#dbeafe] dark:border-gray-800">
+            <div className="bg-blue-100 dark:bg-gray-800 rounded-xl p-2">
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#bfdbfe"/></svg>
             </div>
-            <h1 className="text-lg sm:text-2xl font-extrabold text-[#1e3a8a] tracking-tight">Relax Contas</h1>
+            <h1 className="text-lg sm:text-2xl font-extrabold text-[#1e3a8a] dark:text-gray-100 tracking-tight">Relax Contas</h1>
             {isMobile && (
               <button 
                 onClick={toggleSidebar}
@@ -119,11 +119,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
                     onClick={handleItemClick}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-base shadow-sm
                       ${location.pathname === item.path
-                        ? 'bg-[#e0e7ff] text-[#1e3a8a] shadow-md'
-                        : 'text-[#2563eb] hover:bg-[#dbeafe]'}
+                        ? 'bg-[#e0e7ff] dark:bg-gray-800 text-[#1e3a8a] dark:text-blue-300 shadow-md'
+                        : 'text-[#2563eb] dark:text-blue-400 hover:bg-[#dbeafe] dark:hover:bg-gray-800'}
                     `}
                   >
-                    <span className={`text-xl ${location.pathname === item.path ? 'text-blue-700' : 'text-[#60a5fa]'}`}>{item.icon}</span>
+                    <span className={`text-xl ${location.pathname === item.path ? 'text-blue-700 dark:text-blue-300' : 'text-[#60a5fa] dark:text-blue-400'}`}>{item.icon}</span>
                     <span>{item.label}</span>
                   </Link>
                 </li>
@@ -131,13 +131,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
             </ul>
           </nav>
           <div className="px-4 sm:px-6 pb-4 sm:pb-6 mt-auto">
-            <div className="bg-white border border-[#dbeafe] rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm">
-              <p className="text-xs font-semibold text-[#60a5fa] mb-1">Saldo Total</p>
-              <p className="text-xl font-bold text-[#1e3a8a] mb-3">
+            <div className="bg-white dark:bg-gray-900 border border-[#dbeafe] dark:border-gray-800 rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm">
+              <p className="text-xs font-semibold text-[#60a5fa] dark:text-blue-300 mb-1">Saldo Total</p>
+              <p className="text-xl font-bold text-[#1e3a8a] dark:text-gray-100 mb-3">
                 {loading ? 'Carregando...' : error ? error : formatCurrency(totalBalance || 0)}
               </p>
               <div className="w-full flex justify-end mb-1">
-                <span className="inline-block bg-blue-100 text-blue-700 text-[11px] font-semibold px-2 py-0.5 rounded-full">Em breve</span>
+                <span className="inline-block bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-blue-300 text-[11px] font-semibold px-2 py-0.5 rounded-full">Em breve</span>
               </div>
               <button className="w-full bg-gradient-to-r from-blue-400 to-blue-700 text-white font-semibold py-2 rounded-xl shadow hover:from-blue-500 hover:to-blue-800 transition">Atualizar Pro</button>
             </div>

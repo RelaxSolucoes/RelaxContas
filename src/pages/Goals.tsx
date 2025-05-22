@@ -396,7 +396,7 @@ const Goals: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Metas Financeiras</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Metas Financeiras</h1>
         <button
           onClick={() => handleOpenModal()}
           className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 text-sm flex items-center gap-2"
@@ -414,38 +414,38 @@ const Goals: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
-          <p className="text-sm text-purple-700 font-medium">Total Planejado</p>
-          <p className="text-2xl font-bold text-purple-600">{formatCurrency(totalTargetAmount)}</p>
+        <div className="bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
+          <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">Total Planejado</p>
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-300">{formatCurrency(totalTargetAmount)}</p>
         </div>
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-          <p className="text-sm text-green-700 font-medium">Total Acumulado</p>
-          <p className="text-2xl font-bold text-green-600">{formatCurrency(totalCurrentAmount)}</p>
+        <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800 rounded-xl p-4">
+          <p className="text-sm text-green-700 dark:text-green-300 font-medium">Total Acumulado</p>
+          <p className="text-2xl font-bold text-green-600 dark:text-green-300">{formatCurrency(totalCurrentAmount)}</p>
         </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-sm text-blue-700 font-medium">Faltando</p>
-          <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalRemaining)}</p>
+        <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+          <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Faltando</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-300">{formatCurrency(totalRemaining)}</p>
         </div>
       </div>
 
       {/* Overall Progress */}
       {goals.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-medium text-gray-800">Progresso Geral</h3>
-            <span className="text-sm font-semibold text-blue-600">
+            <h3 className="font-medium text-gray-800 dark:text-gray-100">Progresso Geral</h3>
+            <span className="text-sm font-semibold text-blue-600 dark:text-blue-300">
               {overallPercentage.toFixed(0)}%
             </span>
           </div>
           
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-blue-500 transition-all duration-500"
               style={{ width: `${overallPercentage}%` }}
             ></div>
           </div>
           
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-300 mt-1">
             <span>{formatCurrency(0)}</span>
             <span>{formatCurrency(totalTargetAmount / 2)}</span>
             <span>{formatCurrency(totalTargetAmount)}</span>
@@ -460,7 +460,7 @@ const Goals: React.FC = () => {
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center w-full py-16">
             <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-            <p className="text-gray-500 text-lg font-medium">Nenhuma meta cadastrada</p>
+            <p className="text-gray-500 dark:text-white text-lg font-medium">Nenhuma meta cadastrada</p>
             <p className="text-gray-400 text-sm mt-1">Crie sua primeira meta para acompanhar seu progresso financeiro.</p>
             <button
               onClick={() => handleOpenModal()}

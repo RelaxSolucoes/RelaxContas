@@ -11,9 +11,10 @@ import Budgets from './pages/Budgets';
 import Goals from './pages/Goals';
 import Reports from './pages/Reports';
 import Calculator from './pages/Calculator';
-import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import Categories from './pages/Categories';
 import { AppProvider } from './context/AppContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 function App() {
@@ -23,30 +24,32 @@ function App() {
   );
 
   return (
-    <AppProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="transactions" element={<Transactions />} />
-              <Route path="accounts" element={<Accounts />} />
-              <Route path="categories" element={<Settings />} />
-              <Route path="budgets" element={<Budgets />} />
-              <Route path="goals" element={<Goals />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="calculator" element={<Calculator />} />
-              <Route path="profile" element={<Profile />} />
+    <ThemeProvider>
+      <AppProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="transactions" element={<Transactions />} />
+                <Route path="accounts" element={<Accounts />} />
+                <Route path="categories" element={<Categories />} />
+                <Route path="budgets" element={<Budgets />} />
+                <Route path="goals" element={<Goals />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="calculator" element={<Calculator />} />
+                <Route path="profile" element={<Profile />} />
+              </Route>
             </Route>
-          </Route>
-          
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </AppProvider>
+            
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 

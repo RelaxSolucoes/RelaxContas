@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ResponsiveContainer, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, BarChart, Bar } from 'recharts';
 import { Transaction } from '../../types';
 
@@ -36,9 +36,19 @@ const MonthlyBalanceChart: React.FC<MonthlyBalanceChartProps> = ({ transactions 
 
   const hasData = data.some(d => d.Receitas > 0 || d.Despesas > 0);
 
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+    // Usar MutationObserver para detectar mudanças na classe do <html>
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
-      <h2 className="text-xl font-bold mb-6 text-gray-800">Balanço Mensal</h2>
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+      <h2 className="text-lg font-semibold mb-4 dark:text-white">Balanço Mensal</h2>
       {!hasData ? (
         <div className="flex flex-col items-center justify-center w-full py-12">
           <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
@@ -48,25 +58,25 @@ const MonthlyBalanceChart: React.FC<MonthlyBalanceChartProps> = ({ transactions 
       ) : (
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={data} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
-            <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-            <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
+            <CartesianGrid strokeDasharray="4 4" stroke={isDark ? '#334155' : '#e5e7eb'} />
+            <XAxis dataKey="name" tick={{ fontSize: 14, fill: isDark ? '#fff' : '#334155' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 14, fill: isDark ? '#fff' : '#334155' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
             <Tooltip content={({ active, payload, label }) => {
               if (!active || !payload) return null;
               return (
-                <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
-                  <div className="font-semibold text-gray-700 mb-1">{label}</div>
+                <div style={{ background: isDark ? '#1e293b' : '#fff', border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', padding: 12 }}>
+                  <div style={{ fontWeight: 600, marginBottom: 6, color: isDark ? '#fff' : '#334155' }}>{label}</div>
                   {payload.map((entry, i) => (
-                    <div key={i} className="flex items-center gap-2 mb-1">
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                       <span style={{ background: entry.color, width: 10, height: 10, borderRadius: 5, display: 'inline-block' }}></span>
-                      <span className="text-sm text-gray-600">{entry.name}:</span>
-                      <span className="font-bold" style={{ color: entry.color }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
+                      <span style={{ color: isDark ? '#fff' : '#334155', fontSize: 14 }}>{entry.name}:</span>
+                      <span style={{ color: entry.color, fontWeight: 700 }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
                     </div>
                   ))}
                 </div>
               );
             }} />
-            <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+            <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={value => <span style={{ color: isDark ? '#fff' : '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
             <Bar dataKey="Receitas" fill="#22c55e" radius={[6, 6, 0, 0]} barSize={28} />
             <Bar dataKey="Despesas" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={28} />
             <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} strokeDasharray="5 2" />

@@ -546,7 +546,7 @@ const Accounts: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
-        <h1 className="text-2xl font-bold text-gray-800">Contas</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Contas</h1>
         <button
           onClick={() => handleOpenModal()}
           className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2 text-sm sm:text-base"
@@ -564,26 +564,26 @@ const Accounts: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
-          <p className="text-sm text-blue-700 font-medium">Saldo Total</p>
-          <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalBalance)}</p>
-          <p className="text-xs text-blue-600 mt-1">
+        <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 rounded-xl p-3 sm:p-4">
+          <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Saldo Total</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-200">{formatCurrency(totalBalance)}</p>
+          <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
             Total em contas ativas (exceto cartões de crédito)
           </p>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4">
-          <p className="text-sm text-red-700 font-medium">Total em Faturas</p>
-          <p className="text-2xl font-bold text-red-600">{formatCurrency(creditCardTotal)}</p>
-          <p className="text-xs text-red-600 mt-1">
+        <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-xl p-3 sm:p-4">
+          <p className="text-sm text-red-700 dark:text-red-300 font-medium">Total em Faturas</p>
+          <p className="text-2xl font-bold text-red-600 dark:text-red-200">{formatCurrency(creditCardTotal)}</p>
+          <p className="text-xs text-red-600 dark:text-red-300 mt-1">
             Total de faturas em aberto
           </p>
         </div>
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 sm:p-4">
-          <p className="text-sm text-purple-700 font-medium">Limite Disponível</p>
-          <p className="text-2xl font-bold text-purple-600">
+        <div className="bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-800 rounded-xl p-3 sm:p-4">
+          <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">Limite Disponível</p>
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-200">
             {formatCurrency(creditCardLimit - creditCardTotal)}
           </p>
-          <p className="text-xs text-purple-600 mt-1">
+          <p className="text-xs text-purple-600 dark:text-purple-300 mt-1">
             {creditCardLimit > 0 && (
               <>Uso: {Math.round((creditCardTotal / creditCardLimit) * 100)}% do limite</>
             )}
@@ -593,16 +593,16 @@ const Accounts: React.FC = () => {
 
       {/* Accounts List */}
       <div className="space-y-3 sm:space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800">Suas Contas</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Suas Contas</h2>
         
         {accounts.length === 0 ? (
           <div className="flex flex-col items-center justify-center w-full py-16">
             <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-            <p className="text-gray-500 text-lg font-medium">Nenhuma conta cadastrada</p>
+            <p className="text-gray-500 dark:text-white text-lg font-medium">Nenhuma conta cadastrada</p>
             <p className="text-gray-400 text-sm mt-1">Adicione sua primeira conta para começar a controlar seu saldo.</p>
             <button
               onClick={() => handleOpenModal()}
-              className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-xl shadow hover:from-blue-600 hover:to-blue-800 transition"
+              className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-900 dark:to-blue-700 text-white font-semibold px-6 py-2 rounded-xl shadow hover:from-blue-600 hover:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 transition"
             >
               Adicionar Conta
             </button>
@@ -612,7 +612,7 @@ const Accounts: React.FC = () => {
             {accounts.map(account => (
               <div 
                 key={account.id} 
-                className={`${account.isactive ? 'bg-white' : 'bg-gray-50'} rounded-xl border border-gray-200 p-3 sm:p-4 hover:shadow-md transition-shadow`}
+                className={`${account.isactive ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} rounded-xl border border-gray-200 dark:border-gray-800 p-3 sm:p-4 hover:shadow-md transition-shadow`}
               >
                 <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-2 sm:mb-3 gap-2 xs:gap-0">
                   <div className="flex items-center">
@@ -625,55 +625,49 @@ const Accounts: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800 text-sm sm:text-base">{account.name}</h3>
-                      <p className="text-xs text-gray-500">{getAccountTypeLabel(account.type)}</p>
+                      <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base">{account.name}</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-300">{getAccountTypeLabel(account.type)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2">
                     <button
                       onClick={() => handleOpenModal(account)}
-                      className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100"
+                      className="p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       <Edit size={16} />
                     </button>
                     <button
                       onClick={() => handleDeleteAccount(account.id)}
-                      className="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-gray-100"
+                      className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
                 
-                <div className={`text-xl font-bold ${!account.isactive && 'text-gray-400'}`}>
+                <div className={`text-xl font-bold ${!account.isactive ? 'text-gray-400 dark:text-gray-600' : 'dark:text-white'}`}>
                   {formatCurrency(account.balance, account.currency)}
                 </div>
                 
                 {account.type === 'credit' && (
                   <div className="mt-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Limite:</span>
-                      <span className="font-medium">
-                        {formatCurrency(account.creditlimit || 0, account.currency)}
-                      </span>
+                      <span className="text-gray-500 dark:text-gray-300">Limite:</span>
+                      <span className="font-medium dark:text-white">{formatCurrency(account.creditlimit || 0, account.currency)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Disponível:</span>
-                      <span className="font-medium text-green-600">
-                        {formatCurrency((account.creditlimit || 0) - account.balance, account.currency)}
-                      </span>
+                      <span className="text-gray-500 dark:text-gray-300">Disponível:</span>
+                      <span className="font-medium text-green-600 dark:text-green-300">{formatCurrency((account.creditlimit || 0) - account.balance, account.currency)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Vencimento:</span>
-                      <span className="font-medium">
-                        Todo dia {account.duedate || 1}
-                      </span>
+                      <span className="text-gray-500 dark:text-gray-300">Vencimento:</span>
+                      <span className="font-medium dark:text-white">Todo dia {account.duedate || 1}</span>
                     </div>
                   </div>
                 )}
                 
                 {!account.isactive && (
-                  <div className="mt-2 text-xs text-gray-500 italic">
+                  <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
                     Conta inativa
                   </div>
                 )}

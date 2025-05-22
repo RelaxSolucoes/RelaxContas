@@ -73,9 +73,9 @@ const IncomeExpenseChart: React.FC = () => {
           <p className="text-gray-400 text-sm mt-1">Adicione transações para visualizar receitas e despesas mensais.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="font-semibold text-gray-800">Receitas vs Despesas</h2>
+            <h2 className="font-semibold text-gray-800 dark:text-gray-100">Receitas vs Despesas</h2>
             
             <div className="space-x-1 text-sm">
               <button 

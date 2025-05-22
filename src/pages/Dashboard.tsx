@@ -259,84 +259,85 @@ const Dashboard: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white col-span-full">Dashboard</h1>
         {/* Saldo Total */}
-        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between min-h-[120px]">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-xs font-medium text-gray-500 truncate">Saldo Total</h3>
-            <span className="bg-blue-50 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-full">Total</span>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-white truncate">Saldo Total</h3>
+            <span className="bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-white text-[11px] font-medium px-2 py-0.5 rounded-full">Total</span>
           </div>
-          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.totalBalance)}</p>
-          <span className="text-xs text-gray-500 mt-2">Todas as contas</span>
+          <p className="text-xl font-bold mt-1 truncate dark:text-white">{formatCurrency(data.totalBalance)}</p>
+          <span className="text-xs text-gray-500 dark:text-white mt-2">Todas as contas</span>
         </div>
 
         {/* Receitas do Mês */}
-        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between min-h-[120px]">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-xs font-medium text-gray-500 truncate">Receitas do Mês</h3>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300 truncate">Receitas do Mês</h3>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               incomeChangeLabel === 'Novo' || incomeChangeLabel.startsWith('+')
-                ? 'bg-green-50 text-green-600'
+                ? 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-300'
                 : incomeChangeLabel.startsWith('-')
-                  ? 'bg-red-50 text-red-600'
-                  : 'bg-gray-100 text-gray-500'
+                  ? 'bg-red-50 dark:bg-red-900 text-red-600 dark:text-red-300'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-300'
             }`}>
               {incomeChangeLabel}
             </span>
           </div>
-          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.monthlyIncome)}</p>
+          <p className="text-xl font-bold mt-1 truncate dark:text-gray-100">{formatCurrency(data.monthlyIncome)}</p>
           <div className="flex items-center text-xs mt-2">
             <ArrowUpRight 
               size={14} 
               className={incomeChangeLabel.startsWith('+') ? 'text-green-500' : 'text-red-500'} 
             />
-            <span className="text-gray-500 ml-1 truncate">
+            <span className="text-gray-500 dark:text-gray-300 ml-1 truncate">
               vs. mês anterior ({formatCurrency(data.lastMonthIncome)})
             </span>
           </div>
         </div>
 
         {/* Despesas do Mês */}
-        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between min-h-[120px]">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-xs font-medium text-gray-500 truncate">Despesas do Mês</h3>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300 truncate">Despesas do Mês</h3>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               expenseChangeLabel === 'Novo' || expenseChangeLabel.startsWith('-')
-                ? 'bg-red-50 text-red-600'
+                ? 'bg-red-50 dark:bg-red-900 text-red-600 dark:text-red-300'
                 : expenseChangeLabel.startsWith('+')
-                  ? 'bg-green-50 text-green-600'
-                  : 'bg-gray-100 text-gray-500'
+                  ? 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-300'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-300'
             }`}>
               {expenseChangeLabel}
             </span>
           </div>
-          <p className="text-xl font-bold mt-1 truncate">{formatCurrency(data.monthlyExpenses)}</p>
+          <p className="text-xl font-bold mt-1 truncate dark:text-gray-100">{formatCurrency(data.monthlyExpenses)}</p>
           <div className="flex items-center text-xs mt-2">
             <ArrowDownRight 
               size={14} 
               className={expenseChangeLabel.startsWith('-') ? 'text-red-500' : 'text-green-500'} 
             />
-            <span className="text-gray-500 ml-1 truncate">
+            <span className="text-gray-500 dark:text-gray-300 ml-1 truncate">
               vs. mês anterior ({formatCurrency(data.lastMonthExpenses)})
             </span>
           </div>
         </div>
 
         {/* Taxa de Economia */}
-        <div className="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between min-h-[120px]">
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between min-h-[120px]">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-xs font-medium text-gray-500 truncate">Taxa de Economia</h3>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300 truncate">Taxa de Economia</h3>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
               data.savingsRate >= 20 
-                ? 'bg-green-50 text-green-600' 
+                ? 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-300' 
                 : data.savingsRate >= 10 
-                  ? 'bg-yellow-50 text-yellow-600' 
-                  : 'bg-red-50 text-red-600'
+                  ? 'bg-yellow-50 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300' 
+                  : 'bg-red-50 dark:bg-red-900 text-red-600 dark:text-red-300'
             }`}>
               {data.savingsRate >= 20 ? 'Ótimo' : data.savingsRate >= 10 ? 'Bom' : 'Atenção'}
             </span>
           </div>
-          <p className="text-xl font-bold mt-1 truncate">{data.savingsRate.toFixed(1)}%</p>
-          <span className="text-xs text-gray-500 mt-2 truncate">Meta: 20% da renda</span>
+          <p className="text-xl font-bold mt-1 truncate dark:text-gray-100">{data.savingsRate.toFixed(1)}%</p>
+          <span className="text-xs text-gray-500 dark:text-gray-300 mt-2 truncate">Meta: 20% da renda</span>
         </div>
       </div>
 
@@ -377,14 +378,14 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Expenses by Category */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-6">Despesas por Categoria</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+        <h2 className="text-lg font-semibold mb-6 dark:text-white">Despesas por Categoria</h2>
         <div className="space-y-4">
           {data.expensesByCategory.length === 0 ? (
             <div className="flex flex-col items-center justify-center w-full py-12">
               <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-              <p className="text-gray-500 text-lg font-medium">Nenhuma despesa encontrada neste mês</p>
-              <p className="text-gray-400 text-sm mt-1">Adicione transações de despesa para visualizar este gráfico.</p>
+              <p className="text-gray-500 dark:text-white text-lg font-medium">Nenhuma despesa encontrada neste mês</p>
+              <p className="text-gray-400 dark:text-white text-sm mt-1">Adicione transações de despesa para visualizar este gráfico.</p>
             </div>
           ) : (
             data.expensesByCategory.map((category: any, index: number) => (
@@ -395,11 +396,11 @@ const Dashboard: React.FC = () => {
                       className="w-3 h-3 rounded-full mr-2"
                       style={{ backgroundColor: category.category?.color }}
                     ></div>
-                    <span className="text-sm font-medium">{category.category?.name}</span>
+                    <span className="text-sm font-medium dark:text-white">{category.category?.name}</span>
                   </div>
-                  <span className="text-sm font-medium">{formatCurrency(category.total)}</span>
+                  <span className="text-sm font-medium dark:text-white">{formatCurrency(category.total)}</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full">
+                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full">
                   <div 
                     className="h-full rounded-full"
                     style={{ 
@@ -408,7 +409,7 @@ const Dashboard: React.FC = () => {
                     }}
                   ></div>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-gray-500 dark:text-white mt-1">
                   <span>{category.count} transações</span>
                   <span>{category.percentage.toFixed(1)}%</span>
                 </div>
@@ -419,16 +420,16 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Top Transactions */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-6">Maiores Transações</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+        <h2 className="text-lg font-semibold mb-6 dark:text-white">Balanço Mensal</h2>
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Despesas</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-3 dark:text-white">Maiores Despesas</h3>
             <div className="space-y-3">
               {data.topExpenses.length === 0 ? (
                 <div className="flex flex-col items-center justify-center w-full py-8">
                   <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-                  <p className="text-gray-500 text-base font-medium">Nenhuma despesa encontrada</p>
+                  <p className="text-gray-500 text-base font-medium dark:text-white">Nenhuma despesa encontrada</p>
                   <p className="text-gray-400 text-xs mt-1">Adicione transações de despesa para visualizar aqui.</p>
                 </div>
               ) : (
@@ -439,9 +440,9 @@ const Dashboard: React.FC = () => {
                         className="w-2 h-2 rounded-full mr-2"
                         style={{ backgroundColor: transaction.categories?.color }}
                       ></div>
-                      <span className="text-sm">{transaction.description}</span>
+                      <span className="text-sm dark:text-white">{transaction.description}</span>
                     </div>
-                    <span className="text-sm font-medium text-red-600">
+                    <span className="text-sm font-medium text-red-600 dark:text-white">
                       {formatCurrency(transaction.amount)}
                     </span>
                   </div>
@@ -450,12 +451,12 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Receitas</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-3 dark:text-white">Maiores Receitas</h3>
             <div className="space-y-3">
               {data.topIncomes.length === 0 ? (
                 <div className="flex flex-col items-center justify-center w-full py-8">
                   <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-                  <p className="text-gray-500 text-base font-medium">Nenhuma receita encontrada</p>
+                  <p className="text-gray-500 text-base font-medium dark:text-white">Nenhuma receita encontrada</p>
                   <p className="text-gray-400 text-xs mt-1">Adicione transações de receita para visualizar aqui.</p>
                 </div>
               ) : (
@@ -466,9 +467,9 @@ const Dashboard: React.FC = () => {
                         className="w-2 h-2 rounded-full mr-2"
                         style={{ backgroundColor: transaction.categories?.color }}
                       ></div>
-                      <span className="text-sm">{transaction.description}</span>
+                      <span className="text-sm dark:text-white">{transaction.description}</span>
                     </div>
-                    <span className="text-sm font-medium text-green-600">
+                    <span className="text-sm font-medium text-green-600 dark:text-white">
                       {formatCurrency(transaction.amount)}
                     </span>
                   </div>
@@ -480,10 +481,10 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold">Transações Recentes</h2>
-          <Link to="/transactions" className="text-blue-600 text-sm hover:underline">
+          <h2 className="text-lg font-semibold dark:text-white">Transações Recentes</h2>
+          <Link to="/transactions" className="text-blue-600 dark:text-white text-sm hover:underline">
             Ver todas
           </Link>
         </div>
@@ -491,14 +492,14 @@ const Dashboard: React.FC = () => {
           {data.recentTransactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center w-full py-12">
               <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-              <p className="text-gray-500 text-base font-medium">Nenhuma transação encontrada</p>
-              <p className="text-gray-400 text-xs mt-1">Adicione uma transação para visualizar aqui.</p>
+              <p className="text-gray-500 dark:text-white text-base font-medium">Nenhuma transação encontrada</p>
+              <p className="text-gray-400 dark:text-white text-xs mt-1">Adicione uma transação para visualizar aqui.</p>
             </div>
           ) : (
             data.recentTransactions.map((transaction: any) => (
               <div 
                 key={transaction.id}
-                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
               >
                 <div className="flex items-center">
                   <div 
@@ -510,13 +511,13 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800">{transaction.description}</p>
-                    <div className="flex text-xs text-gray-500">
+                    <p className="font-medium text-gray-800 dark:text-white">{transaction.description}</p>
+                    <div className="flex text-xs text-gray-500 dark:text-white">
                       <span>{new Date(transaction.date).toLocaleDateString('pt-BR')}</span>
                     </div>
                   </div>
                 </div>
-                <div className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
+                <div className={transaction.type === 'income' ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300'}>
                   {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
                 </div>
               </div>

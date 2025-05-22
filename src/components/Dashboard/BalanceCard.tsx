@@ -20,11 +20,11 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
   color = 'blue',
 }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
-    red: 'bg-red-50 text-red-600 border-red-200',
-    yellow: 'bg-yellow-50 text-yellow-600 border-yellow-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
+    blue: 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+    green: 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-300 border-green-200 dark:border-green-800',
+    red: 'bg-red-50 dark:bg-red-900 text-red-600 dark:text-red-300 border-red-200 dark:border-red-800',
+    yellow: 'bg-yellow-50 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
+    purple: 'bg-purple-50 dark:bg-purple-900 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-800',
   };
 
   const cardClass = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue;
@@ -33,7 +33,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
     <div className={`rounded-xl border p-4 ${cardClass}`}>
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-medium text-sm">{title}</h3>
-        <div className="p-2 rounded-full bg-white bg-opacity-50">
+        <div className="p-2 rounded-full bg-white dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-50">
           {icon}
         </div>
       </div>

@@ -356,7 +356,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, category
   );
 };
 
-const Settings: React.FC = () => {
+const Categories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | undefined>(undefined);
@@ -461,24 +461,24 @@ const Settings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Categorias</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Categorias</h1>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl">
+        <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 p-4 rounded-xl">
           {error}
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-3 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 sm:mb-4 gap-2 sm:gap-0">
           <div className="flex items-center gap-2">
-            <SettingsIcon size={20} className="text-gray-500" />
-            <h2 className="text-lg font-semibold text-gray-800">Gerenciar Categorias</h2>
+            <SettingsIcon size={20} className="text-gray-500 dark:text-gray-300" />
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Gerenciar Categorias</h2>
           </div>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition flex items-center gap-2 text-sm sm:text-base"
+            className="bg-gradient-to-r from-blue-400 to-blue-700 dark:from-blue-900 dark:to-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 transition flex items-center gap-2 text-sm sm:text-base"
           >
             <Plus size={16} />
             Nova Categoria
@@ -488,12 +488,12 @@ const Settings: React.FC = () => {
         <div className="space-y-3 sm:space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Receitas</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Receitas</h3>
               <div className="space-y-2">
                 {categories.filter(category => category.type === 'income').length === 0 ? (
                   <div className="flex flex-col items-center justify-center w-full py-8">
                     <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-                    <p className="text-gray-500 text-base font-medium">Nenhuma categoria de receita cadastrada</p>
+                    <p className="text-gray-500 dark:text-white text-base font-medium">Nenhuma categoria de receita cadastrada</p>
                     <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para começar a organizar suas receitas.</p>
                   </div>
                 ) : categories
@@ -501,7 +501,7 @@ const Settings: React.FC = () => {
                   .map(category => (
                     <div 
                       key={category.id}
-                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 gap-2 xs:gap-0"
+                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 gap-2 xs:gap-0"
                     >
                       <div className="flex items-center">
                         <div 
@@ -509,9 +509,9 @@ const Settings: React.FC = () => {
                           style={{ backgroundColor: category.color }}
                         ></div>
                         <div>
-                          <p className="font-medium text-sm sm:text-base">{category.name}</p>
+                          <p className="font-medium text-sm sm:text-base text-gray-800 dark:text-gray-100">{category.name}</p>
                           {category.subcategories && category.subcategories.length > 0 && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-300">
                               {category.subcategories.length} subcategorias
                             </p>
                           )}
@@ -520,13 +520,13 @@ const Settings: React.FC = () => {
                       <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => handleOpenModal(category)}
-                          className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-white"
+                          className="p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-300 rounded-full hover:bg-white dark:hover:bg-gray-900"
                         >
                           <Edit size={16} />
                         </button>
                         <button
                           onClick={() => handleDeleteCategory(category.id)}
-                          className="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-white"
+                          className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-300 rounded-full hover:bg-white dark:hover:bg-gray-900"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -537,12 +537,12 @@ const Settings: React.FC = () => {
             </div>
             
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Despesas</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Despesas</h3>
               <div className="space-y-2">
                 {categories.filter(category => category.type === 'expense').length === 0 ? (
                   <div className="flex flex-col items-center justify-center w-full py-8">
                     <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-                    <p className="text-gray-500 text-base font-medium">Nenhuma categoria de despesa cadastrada</p>
+                    <p className="text-gray-500 dark:text-white text-base font-medium">Nenhuma categoria de despesa cadastrada</p>
                     <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para começar a organizar suas despesas.</p>
                   </div>
                 ) : categories
@@ -550,7 +550,7 @@ const Settings: React.FC = () => {
                   .map(category => (
                     <div 
                       key={category.id}
-                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 gap-2 xs:gap-0"
+                      className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 gap-2 xs:gap-0"
                     >
                       <div className="flex items-center">
                         <div 
@@ -558,9 +558,9 @@ const Settings: React.FC = () => {
                           style={{ backgroundColor: category.color }}
                         ></div>
                         <div>
-                          <p className="font-medium text-sm sm:text-base">{category.name}</p>
+                          <p className="font-medium text-sm sm:text-base text-gray-800 dark:text-gray-100">{category.name}</p>
                           {category.subcategories && category.subcategories.length > 0 && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-300">
                               {category.subcategories.length} subcategorias
                             </p>
                           )}
@@ -569,13 +569,13 @@ const Settings: React.FC = () => {
                       <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => handleOpenModal(category)}
-                          className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-white"
+                          className="p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-300 rounded-full hover:bg-white dark:hover:bg-gray-900"
                         >
                           <Edit size={16} />
                         </button>
                         <button
                           onClick={() => handleDeleteCategory(category.id)}
-                          className="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-white"
+                          className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-300 rounded-full hover:bg-white dark:hover:bg-gray-900"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -597,4 +597,4 @@ const Settings: React.FC = () => {
   );
 };
 
-export default Settings;
+export default Categories;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Transaction, Category } from '../../types';
 
@@ -33,6 +33,16 @@ const IncomeByCategoryChart: React.FC<IncomeByCategoryChartProps> = ({ transacti
     };
   }).filter(g => g.value > 0);
 
+  // Detecção de tema
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   if (incomeCategories.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col items-center justify-center py-12">
@@ -58,15 +68,15 @@ const IncomeByCategoryChart: React.FC<IncomeByCategoryChartProps> = ({ transacti
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
-      <text x={x} y={y} fill="#334155" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={14} fontWeight={600}>
+      <text x={x} y={y} fill={isDark ? '#fff' : '#334155'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={14} fontWeight={600}>
         {`${name} (${(percent * 100).toFixed(0)}%)`}
       </text>
     );
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
-      <h2 className="text-xl font-bold mb-6 text-gray-800">Receitas por Categoria</h2>
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
+      <h2 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">Receitas por Categoria</h2>
       <ResponsiveContainer width="100%" height={340}>
         <PieChart>
           <Pie
@@ -90,16 +100,16 @@ const IncomeByCategoryChart: React.FC<IncomeByCategoryChartProps> = ({ transacti
             if (!active || !payload || !payload[0]) return null;
             const entry = payload[0];
             return (
-              <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
-                <div className="flex items-center gap-2 mb-1">
+              <div style={{ background: isDark ? '#1e293b' : '#fff', border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', padding: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                   <span style={{ background: entry.color, width: 12, height: 12, borderRadius: 6, display: 'inline-block' }}></span>
-                  <span className="font-semibold text-gray-700">{entry.name}</span>
+                  <span style={{ color: isDark ? '#fff' : '#334155', fontWeight: 600 }}>{entry.name}</span>
                 </div>
-                <div className="text-gray-600 text-sm">{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                <div style={{ color: isDark ? '#fff' : '#334155', fontSize: 14 }}>{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
               </div>
             );
           }} />
-          <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+          <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: isDark ? '#fff' : '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
         </PieChart>
       </ResponsiveContainer>
     </div>

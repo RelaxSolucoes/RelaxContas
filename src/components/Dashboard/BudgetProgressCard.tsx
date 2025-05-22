@@ -12,8 +12,8 @@ const BudgetProgressCard: React.FC<BudgetProgressCardProps> = ({ budgetId }) => 
   const budget = budgets.find(b => b.id === budgetId);
   if (!budget) return null;
   
-  const category = categories.find(c => c.id === budget.categoryId);
-  const subcategory = category?.subcategories?.find(s => s.id === budget.subcategoryId);
+  const category = categories.find(c => c.id === budget.category_id);
+  const subcategory = category?.subcategories?.find(s => s.id === budget.subcategory_id);
   
   const { spent, remaining, percentage } = getBudgetProgress(budgetId);
   
@@ -30,9 +30,9 @@ const BudgetProgressCard: React.FC<BudgetProgressCardProps> = ({ budgetId }) => 
   }
   
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-medium text-gray-800">
+        <h3 className="font-medium text-gray-800 dark:text-gray-100">
           {subcategory ? `${category?.name} > ${subcategory.name}` : category?.name}
         </h3>
         <span className={`text-sm font-semibold ${textColor}`}>
@@ -41,7 +41,7 @@ const BudgetProgressCard: React.FC<BudgetProgressCardProps> = ({ budgetId }) => 
       </div>
       
       {/* Progress bar */}
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+      <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-2">
         <div 
           className={`h-full ${progressColor} transition-all duration-500`}
           style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -50,11 +50,11 @@ const BudgetProgressCard: React.FC<BudgetProgressCardProps> = ({ budgetId }) => 
       
       <div className="flex justify-between text-sm">
         <div>
-          <span className="text-gray-500">Gasto: </span>
+          <span className="text-gray-500 dark:text-gray-300">Gasto: </span>
           <span className="font-medium">{formatCurrency(spent)}</span>
         </div>
         <div>
-          <span className="text-gray-500">Meta: </span>
+          <span className="text-gray-500 dark:text-gray-300">Meta: </span>
           <span className="font-medium">{formatCurrency(budget.amount)}</span>
         </div>
       </div>
