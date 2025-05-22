@@ -21,8 +21,10 @@ const AccountBalancePieChart: React.FC<AccountBalancePieChartProps> = ({ account
 
   if (data.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-6 text-center text-gray-500">
-        Nenhuma conta ativa encontrada
+      <div className="bg-white rounded-xl border border-gray-200 p-8 flex flex-col items-center justify-center w-full py-12">
+        <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+        <p className="text-gray-500 text-lg font-medium">Nenhuma conta ativa encontrada</p>
+        <p className="text-gray-400 text-sm mt-1">Adicione uma conta ativa para visualizar este gráfico.</p>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { CreditCard, Plus, Edit, Trash2, DollarSign, PiggyBank, Briefcase, Wallet } from 'lucide-react';
-import { formatCurrency } from '../utils/helpers';
+import { formatCurrency, formatCurrencyInput } from '../utils/helpers';
 import { Account } from '../types';
 
 interface AccountModalProps {
@@ -62,25 +62,15 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, account })
     const { name, value, type } = e.target;
     
     if (name === 'balance' || name === 'creditlimit') {
-      // Remove any non-numeric characters except comma
-      const numericValue = value.replace(/[^0-9,]/g, '');
-      
-      // Convert comma to dot for decimal
-      const normalizedValue = numericValue.replace(',', '.');
-      
-      // Parse the value and ensure it's a valid number
-      const amount = parseFloat(normalizedValue) || 0;
-      
+      const masked = formatCurrencyInput(value);
       setFormData({
         ...formData,
-        [name]: amount,
+        [name]: masked.number,
       });
-      
-      // Update display value
       if (name === 'balance') {
-        setDisplayBalance(numericValue);
+        setDisplayBalance(masked.display);
       } else {
-        setDisplayCreditLimit(numericValue);
+        setDisplayCreditLimit(masked.display);
       }
     } else if (type === 'checkbox') {
       setFormData({
@@ -606,11 +596,13 @@ const Accounts: React.FC = () => {
         <h2 className="text-lg font-semibold text-gray-800">Suas Contas</h2>
         
         {accounts.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-            <p className="text-gray-500 mb-4">Você ainda não tem contas cadastradas</p>
+          <div className="flex flex-col items-center justify-center w-full py-16">
+            <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+            <p className="text-gray-500 text-lg font-medium">Nenhuma conta cadastrada</p>
+            <p className="text-gray-400 text-sm mt-1">Adicione sua primeira conta para começar a controlar seu saldo.</p>
             <button
               onClick={() => handleOpenModal()}
-              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white px-4 py-2 rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition"
+              className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-xl shadow hover:from-blue-600 hover:to-blue-800 transition"
             >
               Adicionar Conta
             </button>

@@ -21,8 +21,10 @@ const IncomeByCategoryChart: React.FC<IncomeByCategoryChartProps> = ({ transacti
     return t.type === 'income' && d >= startOfMonth && d <= endOfMonth;
   });
 
+  const incomeCategories = categories.filter(c => c.type === 'income');
+
   // Agrupa por categoria
-  const grouped = categories.filter(c => c.type === 'income').map(category => {
+  const grouped = incomeCategories.map(category => {
     const total = monthIncomes.filter(t => t.category_id === category.id).reduce((sum, t) => sum + t.amount, 0);
     return {
       name: category.name,
@@ -30,6 +32,16 @@ const IncomeByCategoryChart: React.FC<IncomeByCategoryChartProps> = ({ transacti
       color: category.color,
     };
   }).filter(g => g.value > 0);
+
+  if (incomeCategories.length === 0) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col items-center justify-center py-12">
+        <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+        <p className="text-gray-500 text-lg font-medium">Nenhuma categoria de receita cadastrada</p>
+        <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para visualizar este gráfico.</p>
+      </div>
+    );
+  }
 
   if (grouped.length === 0) {
     return (

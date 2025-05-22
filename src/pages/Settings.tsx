@@ -490,7 +490,13 @@ const Settings: React.FC = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Receitas</h3>
               <div className="space-y-2">
-                {categories
+                {categories.filter(category => category.type === 'income').length === 0 ? (
+                  <div className="flex flex-col items-center justify-center w-full py-8">
+                    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                    <p className="text-gray-500 text-base font-medium">Nenhuma categoria de receita cadastrada</p>
+                    <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para começar a organizar suas receitas.</p>
+                  </div>
+                ) : categories
                   .filter(category => category.type === 'income')
                   .map(category => (
                     <div 
@@ -533,7 +539,13 @@ const Settings: React.FC = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Despesas</h3>
               <div className="space-y-2">
-                {categories
+                {categories.filter(category => category.type === 'expense').length === 0 ? (
+                  <div className="flex flex-col items-center justify-center w-full py-8">
+                    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                    <p className="text-gray-500 text-base font-medium">Nenhuma categoria de despesa cadastrada</p>
+                    <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para começar a organizar suas despesas.</p>
+                  </div>
+                ) : categories
                   .filter(category => category.type === 'expense')
                   .map(category => (
                     <div 

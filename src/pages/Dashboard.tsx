@@ -379,80 +379,101 @@ const Dashboard: React.FC = () => {
       {/* Expenses by Category */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold mb-6">Despesas por Categoria</h2>
-        
         <div className="space-y-4">
-          {data.expensesByCategory.map((category: any, index: number) => (
-            <div key={index}>
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center">
-                  <div 
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: category.category?.color }}
-                  ></div>
-                  <span className="text-sm font-medium">{category.category?.name}</span>
-                </div>
-                <span className="text-sm font-medium">{formatCurrency(category.total)}</span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full">
-                <div 
-                  className="h-full rounded-full"
-                  style={{ 
-                    width: `${category.percentage}%`,
-                    backgroundColor: category.category?.color 
-                  }}
-                ></div>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
-                <span>{category.count} transações</span>
-                <span>{category.percentage.toFixed(1)}%</span>
-              </div>
+          {data.expensesByCategory.length === 0 ? (
+            <div className="flex flex-col items-center justify-center w-full py-12">
+              <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+              <p className="text-gray-500 text-lg font-medium">Nenhuma despesa encontrada neste mês</p>
+              <p className="text-gray-400 text-sm mt-1">Adicione transações de despesa para visualizar este gráfico.</p>
             </div>
-          ))}
+          ) : (
+            data.expensesByCategory.map((category: any, index: number) => (
+              <div key={index}>
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center">
+                    <div 
+                      className="w-3 h-3 rounded-full mr-2"
+                      style={{ backgroundColor: category.category?.color }}
+                    ></div>
+                    <span className="text-sm font-medium">{category.category?.name}</span>
+                  </div>
+                  <span className="text-sm font-medium">{formatCurrency(category.total)}</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full">
+                  <div 
+                    className="h-full rounded-full"
+                    style={{ 
+                      width: `${category.percentage}%`,
+                      backgroundColor: category.category?.color 
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>{category.count} transações</span>
+                  <span>{category.percentage.toFixed(1)}%</span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
       {/* Top Transactions */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold mb-6">Maiores Transações</h2>
-        
         <div className="space-y-6">
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Despesas</h3>
             <div className="space-y-3">
-              {data.topExpenses.map((transaction: any) => (
-                <div key={transaction.id} className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <div 
-                      className="w-2 h-2 rounded-full mr-2"
-                      style={{ backgroundColor: transaction.categories?.color }}
-                    ></div>
-                    <span className="text-sm">{transaction.description}</span>
-                  </div>
-                  <span className="text-sm font-medium text-red-600">
-                    {formatCurrency(transaction.amount)}
-                  </span>
+              {data.topExpenses.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-8">
+                  <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-base font-medium">Nenhuma despesa encontrada</p>
+                  <p className="text-gray-400 text-xs mt-1">Adicione transações de despesa para visualizar aqui.</p>
                 </div>
-              ))}
+              ) : (
+                data.topExpenses.map((transaction: any) => (
+                  <div key={transaction.id} className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div 
+                        className="w-2 h-2 rounded-full mr-2"
+                        style={{ backgroundColor: transaction.categories?.color }}
+                      ></div>
+                      <span className="text-sm">{transaction.description}</span>
+                    </div>
+                    <span className="text-sm font-medium text-red-600">
+                      {formatCurrency(transaction.amount)}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
-
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-3">Maiores Receitas</h3>
             <div className="space-y-3">
-              {data.topIncomes.map((transaction: any) => (
-                <div key={transaction.id} className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <div 
-                      className="w-2 h-2 rounded-full mr-2"
-                      style={{ backgroundColor: transaction.categories?.color }}
-                    ></div>
-                    <span className="text-sm">{transaction.description}</span>
-                  </div>
-                  <span className="text-sm font-medium text-green-600">
-                    {formatCurrency(transaction.amount)}
-                  </span>
+              {data.topIncomes.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-8">
+                  <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-base font-medium">Nenhuma receita encontrada</p>
+                  <p className="text-gray-400 text-xs mt-1">Adicione transações de receita para visualizar aqui.</p>
                 </div>
-              ))}
+              ) : (
+                data.topIncomes.map((transaction: any) => (
+                  <div key={transaction.id} className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div 
+                        className="w-2 h-2 rounded-full mr-2"
+                        style={{ backgroundColor: transaction.categories?.color }}
+                      ></div>
+                      <span className="text-sm">{transaction.description}</span>
+                    </div>
+                    <span className="text-sm font-medium text-green-600">
+                      {formatCurrency(transaction.amount)}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -466,36 +487,41 @@ const Dashboard: React.FC = () => {
             Ver todas
           </Link>
         </div>
-
         <div className="space-y-4">
-          {data.recentTransactions.map((transaction: any) => (
-            <div 
-              key={transaction.id}
-              className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              <div className="flex items-center">
-                <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center mr-3"
-                  style={{ backgroundColor: transaction.categories?.color || '#e2e8f0' }}
-                >
-                  <span className="text-white text-xs">
-                    {transaction.categories?.name?.substring(0, 2).toUpperCase() || 'TX'}
-                  </span>
-                </div>
-                
-                <div>
-                  <p className="font-medium text-gray-800">{transaction.description}</p>
-                  <div className="flex text-xs text-gray-500">
-                    <span>{new Date(transaction.date).toLocaleDateString('pt-BR')}</span>
+          {data.recentTransactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center w-full py-12">
+              <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+              <p className="text-gray-500 text-base font-medium">Nenhuma transação encontrada</p>
+              <p className="text-gray-400 text-xs mt-1">Adicione uma transação para visualizar aqui.</p>
+            </div>
+          ) : (
+            data.recentTransactions.map((transaction: any) => (
+              <div 
+                key={transaction.id}
+                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
+              >
+                <div className="flex items-center">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center mr-3"
+                    style={{ backgroundColor: transaction.categories?.color || '#e2e8f0' }}
+                  >
+                    <span className="text-white text-xs">
+                      {transaction.categories?.name?.substring(0, 2).toUpperCase() || 'TX'}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">{transaction.description}</p>
+                    <div className="flex text-xs text-gray-500">
+                      <span>{new Date(transaction.date).toLocaleDateString('pt-BR')}</span>
+                    </div>
                   </div>
                 </div>
+                <div className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
+                  {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
+                </div>
               </div>
-              
-              <div className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
-                {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

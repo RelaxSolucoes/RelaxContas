@@ -356,7 +356,13 @@ const Reports: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
-              {expensesByCategory.length > 0 ? (
+              {data.categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-12">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhuma categoria cadastrada</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione categorias para visualizar este relatório.</p>
+                </div>
+              ) : expensesByCategory.length > 0 ? (
                 <div className="relative w-72 h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <RePieChart>
@@ -405,7 +411,13 @@ const Reports: React.FC = () => {
             </div>
             {/* Lista de Categorias */}
               <div className="space-y-3">
-              {expensesByCategory.map((group, index) => (
+              {data.categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-12">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhuma categoria cadastrada</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione categorias para visualizar este relatório.</p>
+                </div>
+              ) : expensesByCategory.map((group, index) => (
                 <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 shadow-sm hover:bg-blue-50 transition">
                   <div className="flex items-center gap-3">
                     <span className="w-4 h-4 rounded-full" style={{ backgroundColor: group.category?.color || '#60a5fa', display: 'inline-block' }}></span>
@@ -420,7 +432,7 @@ const Reports: React.FC = () => {
                     </div>
                   </div>
                 ))}
-              {expensesByCategory.length === 0 && (
+              {data.categories.length === 0 ? null : expensesByCategory.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Sem despesas no período selecionado</p>
                 </div>
@@ -433,7 +445,13 @@ const Reports: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Gráfico de Pizza */}
             <div className="flex justify-center items-center">
-              {incomesByCategory.length > 0 ? (
+              {data.categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-12">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhuma categoria cadastrada</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione categorias para visualizar este relatório.</p>
+                </div>
+              ) : incomesByCategory.length > 0 ? (
                 <div className="relative w-72 h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <RePieChart>
@@ -482,7 +500,13 @@ const Reports: React.FC = () => {
             </div>
             {/* Lista de Categorias */}
               <div className="space-y-3">
-              {incomesByCategory.map((group, index) => (
+              {data.categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center w-full py-12">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhuma categoria cadastrada</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione categorias para visualizar este relatório.</p>
+                </div>
+              ) : incomesByCategory.map((group, index) => (
                 <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 shadow-sm hover:bg-blue-50 transition">
                   <div className="flex items-center gap-3">
                     <span className="w-4 h-4 rounded-full" style={{ backgroundColor: group.category?.color || '#60a5fa', display: 'inline-block' }}></span>
@@ -497,7 +521,7 @@ const Reports: React.FC = () => {
                     </div>
                   </div>
                 ))}
-              {incomesByCategory.length === 0 && (
+              {data.categories.length === 0 ? null : incomesByCategory.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Sem receitas no período selecionado</p>
                 </div>
@@ -510,10 +534,20 @@ const Reports: React.FC = () => {
           (() => {
             // Gera os últimos 6 meses
             const now = new Date();
-            const months: { year: number; month: number; label: string }[] = Array.from({ length: 6 }, (_, i) => {
+            const months = Array.from({ length: 6 }, (_, i) => {
               const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
               return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('pt-BR', { month: 'short', year: '2-digit' }) };
             });
+            const hasData = data.transactions.some(t => t.type === 'income' || t.type === 'expense');
+            if (!hasData) {
+              return (
+                <div className="flex flex-col items-center justify-center w-full py-16">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhum dado encontrado</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione receitas ou despesas para visualizar o resumo mensal.</p>
+                </div>
+              );
+            }
             return (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 {/* Gráfico de Barras */}
@@ -602,7 +636,7 @@ const Reports: React.FC = () => {
           (() => {
             // Gera os últimos 6 meses
             const now = new Date();
-            const months: { year: number; month: number; label: string }[] = Array.from({ length: 6 }, (_, i) => {
+            const months = Array.from({ length: 6 }, (_, i) => {
               const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
               return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('pt-BR', { month: 'short', year: '2-digit' }) };
             });
@@ -620,6 +654,16 @@ const Reports: React.FC = () => {
                 Saldo: income - expense,
               };
             });
+            const hasData = data.transactions.some(t => t.type === 'income' || t.type === 'expense');
+            if (!hasData) {
+              return (
+                <div className="flex flex-col items-center justify-center w-full py-16">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+                  <p className="text-gray-500 text-lg font-medium">Nenhum dado encontrado</p>
+                  <p className="text-gray-400 text-sm mt-1">Adicione receitas ou despesas para visualizar o fluxo de caixa.</p>
+                </div>
+              );
+            }
             // Maiores receitas e despesas do período filtrado
             const topIncomes = data.transactions
               .filter(t => t.type === 'income')

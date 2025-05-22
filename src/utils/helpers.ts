@@ -140,3 +140,21 @@ export const formatPhone = (value: string): string => {
     return cleaned;
   }
 };
+
+// Máscara para input de valores monetários (formato brasileiro: 10,00)
+export function formatCurrencyInput(value: string): { display: string; number: number } {
+  // Remove tudo que não for número
+  let cleaned = value.replace(/\D/g, '');
+  // Remove zeros à esquerda
+  cleaned = cleaned.replace(/^0+/, '');
+  // Garante pelo menos dois dígitos
+  if (cleaned.length < 3) cleaned = cleaned.padStart(3, '0');
+  // Separa centavos
+  const cents = cleaned.slice(-2);
+  const reais = cleaned.slice(0, -2) || '0';
+  // Monta o valor formatado
+  const display = `${parseInt(reais, 10).toLocaleString('pt-BR')},${cents}`;
+  // Valor numérico
+  const number = parseFloat(`${parseInt(reais, 10)}.${cents}`);
+  return { display, number };
+}

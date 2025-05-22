@@ -36,19 +36,29 @@ const TotalBalanceLineChart: React.FC<TotalBalanceLineChartProps> = ({ transacti
     };
   });
 
+  const hasData = data.some(d => d.Saldo !== 0);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       <h2 className="text-lg font-semibold mb-4">Evolução do Saldo Total</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip formatter={(value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
-          <Legend />
-          <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
-        </LineChart>
-      </ResponsiveContainer>
+      {!hasData ? (
+        <div className="flex flex-col items-center justify-center w-full py-12">
+          <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+          <p className="text-gray-500 text-lg font-medium">Sem dados suficientes para exibir o gráfico</p>
+          <p className="text-gray-400 text-sm mt-1">Adicione transações para visualizar a evolução do saldo.</p>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip formatter={(value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
+            <Legend />
+            <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

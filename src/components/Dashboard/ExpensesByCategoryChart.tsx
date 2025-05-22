@@ -50,63 +50,73 @@ const ExpensesByCategoryChart: React.FC = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
       <h2 className="text-xl font-bold mb-6 text-gray-800">Despesas por Categoria</h2>
-      <ResponsiveContainer width="100%" height={340}>
-        <PieChart>
-          <Pie
-            data={groupedExpenses}
-            dataKey="total"
-            nameKey="category.name"
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={120}
-            label={renderCustomizedLabel}
-            labelLine={false}
-            stroke="#fff"
-            strokeWidth={3}
-          >
-            {groupedExpenses.map((group, index) => (
-              <Cell key={`cell-${index}`} fill={group.category?.color || COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip content={({ active, payload }) => {
-            if (!active || !payload || !payload[0]) return null;
-            const entry = payload[0];
-            return (
-              <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <span style={{ background: entry.color, width: 12, height: 12, borderRadius: 6, display: 'inline-block' }}></span>
-                  <span className="font-semibold text-gray-700">{entry.name}</span>
-                </div>
-                <div className="text-gray-600 text-sm">{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-              </div>
-            );
-          }} />
-          <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
-        </PieChart>
-      </ResponsiveContainer>
-
-      <div className="mt-4 space-y-2">
-        {groupedExpenses.slice(0, 5).map((group, index) => (
-          <div key={index} className="flex items-center justify-between text-sm">
-            <div className="flex items-center">
-              <div 
-                className="w-3 h-3 rounded-full mr-2"
-                style={{ backgroundColor: group.category?.color || COLORS[index % COLORS.length] }}
-              ></div>
-              <span>{group.category?.name}</span>
-            </div>
-            <div className="font-medium">{formatCurrency(group.total)}</div>
-          </div>
-        ))}
-      </div>
-
-      {groupedExpenses.length > 5 && (
-        <div className="mt-2 text-center">
-          <button className="text-blue-600 text-sm hover:underline">
-            Ver todas as categorias
-          </button>
+      {expenseCategories.length === 0 ? (
+        <div className="flex flex-col items-center justify-center w-full py-12">
+          <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+          <p className="text-gray-500 text-lg font-medium">Nenhuma categoria de despesa cadastrada</p>
+          <p className="text-gray-400 text-sm mt-1">Adicione uma categoria para visualizar este gráfico.</p>
         </div>
+      ) : (
+        <>
+          <ResponsiveContainer width="100%" height={340}>
+            <PieChart>
+              <Pie
+                data={groupedExpenses}
+                dataKey="total"
+                nameKey="category.name"
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={120}
+                label={renderCustomizedLabel}
+                labelLine={false}
+                stroke="#fff"
+                strokeWidth={3}
+              >
+                {groupedExpenses.map((group, index) => (
+                  <Cell key={`cell-${index}`} fill={group.category?.color || COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip content={({ active, payload }) => {
+                if (!active || !payload || !payload[0]) return null;
+                const entry = payload[0];
+                return (
+                  <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span style={{ background: entry.color, width: 12, height: 12, borderRadius: 6, display: 'inline-block' }}></span>
+                      <span className="font-semibold text-gray-700">{entry.name}</span>
+                    </div>
+                    <div className="text-gray-600 text-sm">{Number(entry.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                  </div>
+                );
+              }} />
+              <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+            </PieChart>
+          </ResponsiveContainer>
+
+          <div className="mt-4 space-y-2">
+            {groupedExpenses.slice(0, 5).map((group, index) => (
+              <div key={index} className="flex items-center justify-between text-sm">
+                <div className="flex items-center">
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: group.category?.color || COLORS[index % COLORS.length] }}
+                  ></div>
+                  <span>{group.category?.name}</span>
+                </div>
+                <div className="font-medium">{formatCurrency(group.total)}</div>
+              </div>
+            ))}
+          </div>
+
+          {groupedExpenses.length > 5 && (
+            <div className="mt-2 text-center">
+              <button className="text-blue-600 text-sm hover:underline">
+                Ver todas as categorias
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

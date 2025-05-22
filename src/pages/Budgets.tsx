@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Plus, Edit, Trash2, Settings } from 'lucide-react';
-import { formatCurrency } from '../utils/helpers';
-import { Budget } from '../types';
+import { formatCurrency, formatCurrencyInput } from '../utils/helpers';
+import { Budget, Category } from '../types';
 
 interface BudgetModalProps {
   isOpen: boolean;
@@ -13,12 +13,12 @@ interface BudgetModalProps {
 const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) => {
   const [formData, setFormData] = useState<Omit<Budget, 'id'>>({
     category_id: '',
-    subcategory_id: null,
+    subcategory_id: undefined,
     amount: 0,
     period: 'monthly',
   });
   
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -61,7 +61,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
     if (budget) {
       setFormData({
         category_id: budget.category_id,
-        subcategory_id: budget.subcategory_id || null,
+        subcategory_id: budget.subcategory_id || undefined,
         amount: budget.amount,
         period: budget.period,
       });
@@ -69,7 +69,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
     } else {
       setFormData({
         category_id: '',
-        subcategory_id: null,
+        subcategory_id: undefined,
         amount: 0,
         period: 'monthly',
       });
@@ -84,26 +84,16 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
     const { name, value } = e.target;
     
     if (name === 'amount') {
-      // Remove any non-numeric characters except comma
-      const numericValue = value.replace(/[^0-9,]/g, '');
-      
-      // Convert comma to dot for decimal
-      const normalizedValue = numericValue.replace(',', '.');
-      
-      // Parse the value and ensure it's a valid number
-      const amount = parseFloat(normalizedValue) || 0;
-      
+      const masked = formatCurrencyInput(value);
       setFormData({
         ...formData,
-        amount,
+        amount: masked.number,
       });
-      
-      // Update display value
-      setDisplayAmount(numericValue);
+      setDisplayAmount(masked.display);
     } else {
       setFormData({
         ...formData,
-        [name]: value === '' ? null : value,
+        [name]: value === '' ? undefined : value,
       });
     }
     
@@ -180,7 +170,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
     }
   };
 
-  const selectedCategory = categories.find((c: any) => c.id === formData.category_id);
+  const selectedCategory = categories.find((c) => c.id === formData.category_id);
   
   return (
     <>
@@ -294,7 +284,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, budget }) =>
 
 const Budgets: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [view, setView] = useState<'cards' | 'table'>('cards');
   const [editingBudget, setEditingBudget] = useState<Budget | undefined>(undefined);
@@ -445,11 +435,13 @@ const Budgets: React.FC = () => {
         </div>
         
         {budgets.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-            <p className="text-gray-500 mb-4">Você ainda não tem orçamentos definidos</p>
+          <div className="flex flex-col items-center justify-center w-full py-16">
+            <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+            <p className="text-gray-500 text-lg font-medium">Nenhum orçamento cadastrado</p>
+            <p className="text-gray-400 text-sm mt-1">Crie seu primeiro orçamento para controlar seus gastos.</p>
             <button
               onClick={() => handleOpenModal()}
-              className="bg-gradient-to-r from-blue-400 to-blue-700 text-white rounded-xl shadow font-semibold hover:from-blue-500 hover:to-blue-800 transition px-4 py-2 rounded-md text-sm font-medium"
+              className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-xl shadow hover:from-blue-600 hover:to-blue-800 transition"
             >
               Criar Primeiro Orçamento
             </button>
@@ -457,7 +449,7 @@ const Budgets: React.FC = () => {
         ) : view === 'cards' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {budgets.map(budget => {
-              const category = categories.find((c: any) => c.id === budget.category_id);
+              const category = categories.find((c) => c.id === budget.category_id);
               
               return (
                 <div 
@@ -516,7 +508,7 @@ const Budgets: React.FC = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {budgets.map(budget => {
-                    const category = categories.find((c: any) => c.id === budget.category_id);
+                    const category = categories.find((c) => c.id === budget.category_id);
                     
                     return (
                       <tr key={budget.id} className="hover:bg-gray-50">

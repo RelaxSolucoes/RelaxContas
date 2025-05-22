@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { X } from 'lucide-react';
 import { Transaction, Category, Account } from '../../types';
-import { getCurrentDate } from '../../utils/helpers';
+import { getCurrentDate, formatCurrencyInput } from '../../utils/helpers';
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -125,22 +125,12 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     const { name, value, type } = e.target;
     
     if (name === 'amount') {
-      // Remove any non-numeric characters except comma
-      const numericValue = value.replace(/[^0-9,]/g, '');
-      
-      // Convert comma to dot for decimal
-      const normalizedValue = numericValue.replace(',', '.');
-      
-      // Parse the value and ensure it's a valid number
-      const amount = parseFloat(normalizedValue) || 0;
-      
+      const masked = formatCurrencyInput(value);
       setFormData({
         ...formData,
-        amount,
+        amount: masked.number,
       });
-      
-      // Update display value
-      setDisplayAmount(numericValue);
+      setDisplayAmount(masked.display);
     } else if (type === 'checkbox') {
       setFormData({
         ...formData,

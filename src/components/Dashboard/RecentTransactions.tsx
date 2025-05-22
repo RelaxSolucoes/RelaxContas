@@ -27,8 +27,8 @@ const RecentTransactions: React.FC = () => {
       <div className="space-y-3">
         {sortedTransactions.length > 0 ? (
           sortedTransactions.map(transaction => {
-            const category = categories.find(c => c.id === transaction.categoryId);
-            const account = accounts.find(a => a.id === transaction.accountId);
+            const category = categories.find(c => c.id === transaction.category_id);
+            const account = accounts.find(a => a.id === transaction.account_id);
             
             return (
               <div 
@@ -62,8 +62,10 @@ const RecentTransactions: React.FC = () => {
             );
           })
         ) : (
-          <div className="text-center py-4 text-gray-500">
-            Nenhuma transação encontrada
+          <div className="flex flex-col items-center justify-center w-full py-12">
+            <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-2"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+            <p className="text-gray-500 text-base font-medium">Nenhuma transação encontrada</p>
+            <p className="text-gray-400 text-xs mt-1">Adicione uma transação para visualizar aqui.</p>
           </div>
         )}
       </div>

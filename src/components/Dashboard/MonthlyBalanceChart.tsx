@@ -34,35 +34,45 @@ const MonthlyBalanceChart: React.FC<MonthlyBalanceChartProps> = ({ transactions 
     };
   });
 
+  const hasData = data.some(d => d.Receitas > 0 || d.Despesas > 0);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
       <h2 className="text-xl font-bold mb-6 text-gray-800">Balanço Mensal</h2>
-      <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={data} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-          <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
-          <Tooltip content={({ active, payload, label }) => {
-            if (!active || !payload) return null;
-            return (
-              <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
-                <div className="font-semibold text-gray-700 mb-1">{label}</div>
-                {payload.map((entry, i) => (
-                  <div key={i} className="flex items-center gap-2 mb-1">
-                    <span style={{ background: entry.color, width: 10, height: 10, borderRadius: 5, display: 'inline-block' }}></span>
-                    <span className="text-sm text-gray-600">{entry.name}:</span>
-                    <span className="font-bold" style={{ color: entry.color }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
-                  </div>
-                ))}
-              </div>
-            );
-          }} />
-          <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
-          <Bar dataKey="Receitas" fill="#22c55e" radius={[6, 6, 0, 0]} barSize={28} />
-          <Bar dataKey="Despesas" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={28} />
-          <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} strokeDasharray="5 2" />
-        </BarChart>
-      </ResponsiveContainer>
+      {!hasData ? (
+        <div className="flex flex-col items-center justify-center w-full py-12">
+          <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-300 mb-4"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
+          <p className="text-gray-500 text-lg font-medium">Sem dados suficientes para exibir o gráfico</p>
+          <p className="text-gray-400 text-sm mt-1">Adicione transações para visualizar o balanço mensal.</p>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={320}>
+          <BarChart data={data} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
+            <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 14, fill: '#64748b' }} axisLine={false} tickLine={false} width={80} tickFormatter={v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
+            <Tooltip content={({ active, payload, label }) => {
+              if (!active || !payload) return null;
+              return (
+                <div className="bg-white border border-gray-200 rounded-lg shadow p-3">
+                  <div className="font-semibold text-gray-700 mb-1">{label}</div>
+                  {payload.map((entry, i) => (
+                    <div key={i} className="flex items-center gap-2 mb-1">
+                      <span style={{ background: entry.color, width: 10, height: 10, borderRadius: 5, display: 'inline-block' }}></span>
+                      <span className="text-sm text-gray-600">{entry.name}:</span>
+                      <span className="font-bold" style={{ color: entry.color }}>{typeof entry.value === 'number' ? entry.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            }} />
+            <Legend iconType="circle" wrapperStyle={{ paddingTop: 12 }} formatter={(value) => <span style={{ color: '#334155', fontWeight: 500, fontSize: 14 }}>{value}</span>} />
+            <Bar dataKey="Receitas" fill="#22c55e" radius={[6, 6, 0, 0]} barSize={28} />
+            <Bar dataKey="Despesas" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={28} />
+            <Line type="monotone" dataKey="Saldo" stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} activeDot={{ r: 7 }} strokeDasharray="5 2" />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
